@@ -19,4 +19,6 @@ app.UseFastEndpoints();
 app.UseOpenApi();
 app.UseSwaggerUi3(c => c.ConfigureDefaults());
 
-app.Run();
+await app.RunAsync();
+
+public partial class Program { }
