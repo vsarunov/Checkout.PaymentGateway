@@ -8,13 +8,13 @@ public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest, PaymentRespons
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("/v1/payment/{id}");
+        Routes("/v1/payments/{id}");
         AllowAnonymous();
     }
 
-    public override Task HandleAsync(GetPaymentRequest req, CancellationToken ct)
+    public override async Task HandleAsync(GetPaymentRequest req, CancellationToken ct)
     {
-        return base.HandleAsync(req, ct);
+        await SendAsync(new PaymentResponse(), StatusCodes.Status200OK);
     }
 }
 
