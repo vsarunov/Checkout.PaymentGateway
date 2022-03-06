@@ -105,7 +105,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
                     payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, payment.CardDetails, ProcessPaymentFactory.CreateMoneyDto(payment.Value.Amount, (string)value), payment.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.TransactionTimeStamp.TimeStamp):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, payment.CardDetails, payment.Value, new TimeStampDto((DateTime)value));
+                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, payment.CardDetails, payment.Value, new TransactionTimeStampDto((DateTime)value));
                     break;
                 default:
                     throw new ArgumentException("Not defined field");
