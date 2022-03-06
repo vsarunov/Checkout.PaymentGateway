@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Checkout.PaymentGateway.API.ComponentTests.Setup;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
+using Checkout.PaymentGateway.API.Models.Shared.Payments;
 using Shouldly;
 
 namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures
@@ -20,7 +21,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures
             return await SendAsync(HttpMethod.Post, "/v1/payments", payment);
         }
 
-        public async Task<HttpResponseMessage> GetPaymentByIdAsync(Guid paymentId)
+        public async Task<HttpResponseMessage> GetPaymentByIdAsync(PaymentId paymentId)
         {
             return await SendAsync(HttpMethod.Post, $"/v1/payments/{paymentId}");
         }
@@ -33,6 +34,16 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures
         internal void ThenAFailureResponseIsReturned()
         {
             LastResponse.IsSuccessStatusCode.ShouldBeFalse();
+        }
+
+        internal void ThenAServiceUnavailableIsReturned()
+        {
+            LastResponse.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        }
+
+        internal void ThenABadRequestResponseIsReturned()
+        {
+            LastResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         }
 
         internal void ThenAForbiddenResponseIsReturned()
