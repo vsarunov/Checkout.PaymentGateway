@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Checkout.PaymentGateway.API.Models\Checkout.PaymentGateway.API.Models.csproj" />
+    <ProjectReference Include="..\Checkout.PaymentGateway.Application.Integration\Checkout.PaymentGateway.Application.Integration.csproj" />
+    <ProjectReference Include="..\Checkout.PaymentGateway.Infrastructure\Checkout.PaymentGateway.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

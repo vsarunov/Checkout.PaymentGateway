@@ -1,35 +1,39 @@
-﻿using Checkout.PaymentGateway.API.ComponentTests.Shared;
+﻿using Checkout.PaymentGateway.API.ComponentTests.Mappers;
+using Checkout.PaymentGateway.API.ComponentTests.Shared;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Shared.Payments;
+using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 {
     public class PaymentFixture : ApiClientFixture
     {
-        private ProcessPaymentRequest payment;
+        private ProcessPaymentRequest paymentRequest;
+        private readonly IPaymentRepository paymentRepository;
 
         public PaymentFixture() : base()
         {
+            paymentRepository = Substitute.For<IPaymentRepository>();
         }
 
         protected override void RegisterDependencies(IServiceCollection collection)
         {
-
+            collection.AddSingleton<IPaymentRepository>(paymentRepository);
         }
 
         internal void GivenAValidPayment(ProcessPaymentRequest request)
         {
-            this.payment = request;
+            paymentRequest = request;
         }
 
         internal async Task GivenPaymentExists(ProcessPaymentRequest request)
         {
-            this.payment = request;
-            await CreatePaymentAsync(payment);
+            paymentRequest = request;
+            await CreatePaymentAsync(paymentRequest);
         }
 
         internal void GivenBankRejectsTransactions()
@@ -42,24 +46,35 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
             // bank request is failing
         }
 
+        internal void GivenBankAcceptsPayment()
+        {
+            // bank request is successful
+        }
+
         internal void GivenStorageFailure()
         {
-            // storage failure
+            paymentRepository.WhenForAnyArgs(x => x.SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>())).Do(x => throw new Exception());
+        }
+
+        internal void GivenPaymentAlreadyExists(ProcessPaymentRequest request)
+        {
+            paymentRequest = request;
+            paymentRepository.GetByIdAsync(new Domain.Payments.PaymentId(request.Id.Value)).Returns(paymentRequest.MapRequestToDomain());
         }
 
         internal async Task WhenISubmitThePayment()
         {
-            await CreatePaymentAsync(payment);
+            await CreatePaymentAsync(paymentRequest);
         }
 
         internal async Task WhenIGetExistingPaymentById()
         {
-            await GetPaymentByIdAsync(payment.Id);
+            await GetPaymentByIdAsync(paymentRequest.Id);
         }
 
         internal void ThenPaymentWasStored()
         {
-            // check if payment was stored
+            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>());
         }
 
         internal void ThenPaymentWasSubmittedToBankSuccessfully()
@@ -74,12 +89,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         internal void ThenPaymentIsNotStored()
         {
-            // check payment is not stored
-        }
-
-        internal void GivenBankAcceptsPayment()
-        {
-            // bank request is successful
+            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>());
         }
 
         internal void GivenAFieldIsSet(string fieldName, object value)
@@ -87,25 +97,25 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
             switch (fieldName)
             {
                 case nameof(ProcessPaymentRequest.CardDetails.CVV):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, ProcessPaymentFactory.CreateCardDto((int)value, payment.CardDetails.Number, payment.CardDetails.Expiration), payment.Value, payment.TransactionTimeStamp);
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto((int)value, paymentRequest.CardDetails.Number, paymentRequest.CardDetails.Expiration), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.CardDetails.Number):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, ProcessPaymentFactory.CreateCardDto(payment.CardDetails.CVV, (string)value, payment.CardDetails.Expiration), payment.Value, payment.TransactionTimeStamp);
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto(paymentRequest.CardDetails.CVV, (string)value, paymentRequest.CardDetails.Expiration), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.CardDetails.Expiration.Month):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, ProcessPaymentFactory.CreateCardDto(payment.CardDetails.CVV, payment.CardDetails.Number, ProcessPaymentFactory.CreateExpirationDateDto(payment.CardDetails.Expiration.Year, (int)value)), payment.Value, payment.TransactionTimeStamp);
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto(paymentRequest.CardDetails.CVV, paymentRequest.CardDetails.Number, ProcessPaymentFactory.CreateExpirationDateDto(paymentRequest.CardDetails.Expiration.Year, (int)value)), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.CardDetails.Expiration.Year):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, ProcessPaymentFactory.CreateCardDto(payment.CardDetails.CVV, payment.CardDetails.Number, ProcessPaymentFactory.CreateExpirationDateDto((int)value, payment.CardDetails.Expiration.Month)), payment.Value, payment.TransactionTimeStamp);
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto(paymentRequest.CardDetails.CVV, paymentRequest.CardDetails.Number, ProcessPaymentFactory.CreateExpirationDateDto((int)value, paymentRequest.CardDetails.Expiration.Month)), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.Value.Amount):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, payment.CardDetails, ProcessPaymentFactory.CreateMoneyDto((decimal)value, payment.Value.ISOCurrencyCode), payment.TransactionTimeStamp);
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, paymentRequest.CardDetails, ProcessPaymentFactory.CreateMoneyDto((decimal)value, paymentRequest.Value.ISOCurrencyCode), paymentRequest.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.Value.ISOCurrencyCode):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, payment.CardDetails, ProcessPaymentFactory.CreateMoneyDto(payment.Value.Amount, (string)value), payment.TransactionTimeStamp);
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, paymentRequest.CardDetails, ProcessPaymentFactory.CreateMoneyDto(paymentRequest.Value.Amount, (string)value), paymentRequest.TransactionTimeStamp);
                     break;
                 case nameof(ProcessPaymentRequest.TransactionTimeStamp.TimeStamp):
-                    payment = ProcessPaymentFactory.CreatePaymentRequest(payment.Id, payment.CardDetails, payment.Value, new TimeStampDto((DateTime)value));
+                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, paymentRequest.CardDetails, paymentRequest.Value, new TransactionTimeStampDto((DateTime)value));
                     break;
                 default:
                     throw new ArgumentException("Not defined field");

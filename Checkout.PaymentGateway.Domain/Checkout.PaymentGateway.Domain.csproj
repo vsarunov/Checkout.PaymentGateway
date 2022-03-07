@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Amido.Stacks.Core" Version="0.2.19" />
+    <PackageReference Include="Amido.Stacks.Domain" Version="0.2.15" />
+    <PackageReference Include="StronglyTypedId" Version="0.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Checkout.PaymentGateway.Common\Checkout.PaymentGateway.Common.csproj" />
+  </ItemGroup>
+
 </Project>

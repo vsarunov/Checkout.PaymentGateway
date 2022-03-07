@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Amido.Stacks.Core" Version="0.2.19" />
+  </ItemGroup>
+
 </Project>

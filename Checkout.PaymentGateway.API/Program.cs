@@ -1,5 +1,7 @@
 global using FastEndpoints;
 global using FastEndpoints.Validation;
+using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
+using Checkout.PaymentGateway.Infrastructure.Repositories.Payments;
 using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ builder.Services.AddFastEndpoints();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDoc();
+builder.Services.AddSingleton<IPaymentRepository, InMemoryPaymentRepository>();
 
 var app = builder.Build();
 

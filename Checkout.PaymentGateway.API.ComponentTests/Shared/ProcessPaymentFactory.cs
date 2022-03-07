@@ -14,18 +14,18 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Shared
                 {
                     CVV = 451,
                     Number = "6476330754325643",
-                    Expiration = new ExpirationDateDto
+                    Expiration = new CardExpirationDateDto
                     {
                         Month = DateTime.UtcNow.AddMonths(3).Month,
                         Year = DateTime.UtcNow.AddYears(3).Year,
                     }
                 },
-                Value = new MoneyDto
+                Value = new PaymentDto
                 {
                     Amount = 6500.00m,
                     ISOCurrencyCode = "USD"
                 },
-                TransactionTimeStamp = new TimeStampDto
+                TransactionTimeStamp = new TransactionTimeStampDto
                 {
                     TimeStamp = DateTime.UtcNow
                 }
@@ -34,8 +34,8 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Shared
         internal static ProcessPaymentRequest CreatePaymentRequest(
             PaymentId id,
             CardDto card,
-            MoneyDto value,
-            TimeStampDto transactionTimeStamp) =>
+            PaymentDto value,
+            TransactionTimeStampDto transactionTimeStamp) =>
            new ProcessPaymentRequest()
            {
                Id = id,
@@ -44,7 +44,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Shared
                TransactionTimeStamp = transactionTimeStamp
            };
 
-        internal static CardDto CreateCardDto(int cvv, string number, ExpirationDateDto expiration) =>
+        internal static CardDto CreateCardDto(int cvv, string number, CardExpirationDateDto expiration) =>
             new CardDto
             {
                 CVV = cvv,
@@ -52,15 +52,15 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Shared
                 Expiration = expiration
             };
 
-        internal static ExpirationDateDto CreateExpirationDateDto(int year, int month) =>
-            new ExpirationDateDto
+        internal static CardExpirationDateDto CreateExpirationDateDto(int year, int month) =>
+            new CardExpirationDateDto
             {
                 Month = month,
                 Year = year,
             };
 
-        internal static MoneyDto CreateMoneyDto(decimal amount, string iso) =>
-            new MoneyDto
+        internal static PaymentDto CreateMoneyDto(decimal amount, string iso) =>
+            new PaymentDto
             {
                 Amount = amount,
                 ISOCurrencyCode = iso
