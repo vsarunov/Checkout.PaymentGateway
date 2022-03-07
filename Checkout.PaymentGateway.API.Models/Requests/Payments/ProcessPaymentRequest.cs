@@ -2,4 +2,10 @@
 
 namespace Checkout.PaymentGateway.API.Models.Requests.Payments;
 
-public record struct ProcessPaymentRequest(PaymentId Id, CardDto CardDetails, PaymentDto Value, TransactionTimeStampDto TransactionTimeStamp);
+public class ProcessPaymentRequest
+{
+    public PaymentId Id { get; init; }
+    public CardDto CardDetails { get; init; }
+    public PaymentDto Value { get; init; }
+    public TransactionTimeStampDto TransactionTimeStamp { get; init; }
+}

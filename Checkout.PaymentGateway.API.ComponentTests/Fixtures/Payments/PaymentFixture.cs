@@ -1,11 +1,15 @@
-﻿using Checkout.PaymentGateway.API.ComponentTests.Mappers;
+﻿using Amido.Stacks.Testing.Extensions;
+using Checkout.PaymentGateway.API.ComponentTests.Mappers;
 using Checkout.PaymentGateway.API.ComponentTests.Shared;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Shared.Payments;
 using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using NSubstitute;
+using Shouldly;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
@@ -77,6 +81,15 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
             paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>());
         }
 
+        internal async Task ThenAnErrorPropertyIsReturned(string fieldName)
+        {
+            var result = await GetResponseJsonString();
+            var json = JObject.Parse(result);
+            var errors = json["errors"].FirstOrDefault(x => ((JProperty)x).Name.Contains(fieldName)).Values().FirstOrDefault().ToObject<string>();
+
+            errors.ShouldNotBeEmpty();
+        }
+
         internal void ThenPaymentWasSubmittedToBankSuccessfully()
         {
             // check if was submitted to bank
@@ -96,26 +109,38 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
         {
             switch (fieldName)
             {
+                case nameof(ProcessPaymentRequest.CardDetails):
+                    paymentRequest.With(x => x.CardDetails, (CardDto)value);
+                    break;
                 case nameof(ProcessPaymentRequest.CardDetails.CVV):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto((int)value, paymentRequest.CardDetails.Number, paymentRequest.CardDetails.Expiration), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
+                    paymentRequest.CardDetails.With(x => x.CVV, (int)value);
                     break;
                 case nameof(ProcessPaymentRequest.CardDetails.Number):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto(paymentRequest.CardDetails.CVV, (string)value, paymentRequest.CardDetails.Expiration), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
+                    paymentRequest.CardDetails.With(x => x.Number, (string)value);
+                    break;
+                case nameof(ProcessPaymentRequest.CardDetails.Expiration):
+                    paymentRequest.CardDetails.With(x => x.Expiration, (CardExpirationDateDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.CardDetails.Expiration.Month):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto(paymentRequest.CardDetails.CVV, paymentRequest.CardDetails.Number, ProcessPaymentFactory.CreateExpirationDateDto(paymentRequest.CardDetails.Expiration.Year, (int)value)), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
+                    paymentRequest.CardDetails.Expiration.With(x => x.Month, (int)value);
                     break;
                 case nameof(ProcessPaymentRequest.CardDetails.Expiration.Year):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, ProcessPaymentFactory.CreateCardDto(paymentRequest.CardDetails.CVV, paymentRequest.CardDetails.Number, ProcessPaymentFactory.CreateExpirationDateDto((int)value, paymentRequest.CardDetails.Expiration.Month)), paymentRequest.Value, paymentRequest.TransactionTimeStamp);
+                    paymentRequest.CardDetails.Expiration.With(x => x.Year, (int)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Value):
+                    paymentRequest.With(x => x.Value, (PaymentDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.Value.Amount):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, paymentRequest.CardDetails, ProcessPaymentFactory.CreateMoneyDto((decimal)value, paymentRequest.Value.ISOCurrencyCode), paymentRequest.TransactionTimeStamp);
+                    paymentRequest.Value.With(x => x.Amount, (decimal)value);
                     break;
                 case nameof(ProcessPaymentRequest.Value.ISOCurrencyCode):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, paymentRequest.CardDetails, ProcessPaymentFactory.CreateMoneyDto(paymentRequest.Value.Amount, (string)value), paymentRequest.TransactionTimeStamp);
+                    paymentRequest.Value.With(x => x.ISOCurrencyCode, (string)value);
+                    break;
+                case nameof(ProcessPaymentRequest.TransactionTimeStamp):
+                    paymentRequest.With(x => x.TransactionTimeStamp, (TransactionTimeStampDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.TransactionTimeStamp.TimeStamp):
-                    paymentRequest = ProcessPaymentFactory.CreatePaymentRequest(paymentRequest.Id, paymentRequest.CardDetails, paymentRequest.Value, new TransactionTimeStampDto((DateTime)value));
+                    paymentRequest.TransactionTimeStamp.With(x => x.TimeStamp, (DateTime)value);
                     break;
                 default:
                     throw new ArgumentException("Not defined field");

@@ -29,6 +29,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Features.Payments
             $"And given {fieldName} has invalid value".x(() => fixture.GivenAFieldIsSet(fieldName, value));
             "When I submit the payment".x(() => fixture.WhenISubmitThePayment());
             "Then a bad request response is returned".x(fixture.ThenABadRequestResponseIsReturned);
+            "And the error property is returned".x(x=>fixture.ThenAnErrorPropertyIsReturned(fieldName));
         }
 
         [Scenario, CustomAutoData]

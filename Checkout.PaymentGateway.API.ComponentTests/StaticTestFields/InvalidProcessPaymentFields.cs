@@ -14,6 +14,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.StaticTestFields
         internal static TheoryData<PaymentFixture, ProcessPaymentRequest, string, object> GetInvalidProcessPaymentFields() =>
             new TheoryData<PaymentFixture, ProcessPaymentRequest, string, object>
             {
+                { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails), null },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.CVV), 0 },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.CVV), -1 },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.CVV), 98 },
@@ -21,6 +22,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.StaticTestFields
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Number), null },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Number), string.Empty },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Number), " " },
+                { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration), null },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration.Month), -1 },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration.Month), 0 },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration.Month), 13 },
@@ -28,6 +30,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.StaticTestFields
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration.Year), -1 },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration.Year), 0 },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.CardDetails.Expiration.Year), DateTime.UtcNow.AddYears(-1).Year },
+                { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value), null },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value.Amount), -1m },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value.Amount), 0m },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value.Amount), 0.09m },
@@ -38,6 +41,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.StaticTestFields
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value.ISOCurrencyCode), string.Empty},
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value.ISOCurrencyCode), "  "},
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.Value.ISOCurrencyCode), "randomString"},
+                { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.TransactionTimeStamp), null },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.TransactionTimeStamp.TimeStamp), DateTime.UtcNow.AddDays(-1) },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.TransactionTimeStamp.TimeStamp), DateTime.UtcNow.AddDays(1) },
                 { fixture.Create<PaymentFixture>(),fixture.Create<ProcessPaymentRequest>(), nameof(ProcessPaymentRequest.TransactionTimeStamp.TimeStamp), default(DateTime) },
