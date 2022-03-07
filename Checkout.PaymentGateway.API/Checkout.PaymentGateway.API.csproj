@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amido.Stacks.API" Version="0.2.21" />
     <PackageReference Include="FastEndpoints" Version="3.9.1" />
     <PackageReference Include="FastEndpoints.Swagger" Version="3.9.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
