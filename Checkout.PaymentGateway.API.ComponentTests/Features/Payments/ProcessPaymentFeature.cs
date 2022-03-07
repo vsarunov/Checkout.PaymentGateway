@@ -60,6 +60,14 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Features.Payments
             "Then a service unavailable error is returned".x(fixture.ThenAServiceUnavailableIsReturned);
         }
 
+        [Scenario, CustomAutoData]
+        public void PaymentAlreadyExists(PaymentFixture fixture, ProcessPaymentRequest request)
+        {
+            "Given a payment exists".x(() => fixture.GivenPaymentAlreadyExists(request));
+            "When I submit the payment again".x(() => fixture.WhenISubmitThePayment());
+            "Then a bad request response is returned".x(fixture.ThenABadRequestResponseIsReturned);
+        }
+
         public static TheoryData<PaymentFixture, ProcessPaymentRequest, string, object> GetInvalidProcessPaymentFields() => InvalidProcessPaymentFields.GetInvalidProcessPaymentFields();
     }
 }

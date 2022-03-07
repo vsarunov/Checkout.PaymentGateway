@@ -2,9 +2,9 @@
 
 namespace Checkout.PaymentGateway.Common.Exceptions;
 
-public class InvalidPaymentStatusException : ApplicationExceptionBase
+public class PaymentAlreadyExistsException : ApplicationExceptionBase
 {
-    private InvalidPaymentStatusException(Exceptions.ExceptionCode exceptionCode, string message) : base(message)
+    private PaymentAlreadyExistsException(Exceptions.ExceptionCode exceptionCode, string message) : base(message)
     {
         HttpStatusCode = (int)ExceptionCodeToHttpStatusCodeConverter.GetHttpStatusCode(exceptionCode);
     }
@@ -13,9 +13,9 @@ public class InvalidPaymentStatusException : ApplicationExceptionBase
 
     public static void Raise()
     {
-        var exception = new InvalidPaymentStatusException(
-            Exceptions.ExceptionCode.InvalidPaymentStatus,
-            "Payment status supplied is not defined."
+        var exception = new PaymentAlreadyExistsException(
+            Exceptions.ExceptionCode.PaymentAlreadyExists,
+            "Payment already exists."
             );
 
         throw exception;
