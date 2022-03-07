@@ -97,12 +97,12 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Setup
 
         object lastResponseObject;
 
-        internal async Task<TBody> GetResponseObject<TBody>()
+        internal async Task<string> GetResponseJsonString()
         {
             if (lastResponseObject == null)
-                lastResponseObject = await LastResponse.Content.ReadAsAsync<TBody>();
+                lastResponseObject = await LastResponse.Content.ReadAsStringAsync();
 
-            return (TBody)lastResponseObject;
+            return (string)lastResponseObject;
         }
     }
 }

@@ -1,4 +1,4 @@
 ﻿namespace Checkout.PaymentGateway.API.Models.Shared.Payments;
 
-public record struct CardExpirationDateDto(int Year, int Month);
+public record CardExpirationDateDto(int Year, int Month);
 

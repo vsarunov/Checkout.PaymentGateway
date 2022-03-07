@@ -10,25 +10,9 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Shared
             new ProcessPaymentRequest()
             {
                 Id = new PaymentId(Guid.NewGuid()),
-                CardDetails = new CardDto
-                {
-                    CVV = 451,
-                    Number = "6476330754325643",
-                    Expiration = new CardExpirationDateDto
-                    {
-                        Month = DateTime.UtcNow.AddMonths(3).Month,
-                        Year = DateTime.UtcNow.AddYears(3).Year,
-                    }
-                },
-                Value = new PaymentDto
-                {
-                    Amount = 6500.00m,
-                    ISOCurrencyCode = "USD"
-                },
-                TransactionTimeStamp = new TransactionTimeStampDto
-                {
-                    TimeStamp = DateTime.UtcNow
-                }
+                CardDetails = new CardDto("378282246310005", 451, new CardExpirationDateDto(DateTime.UtcNow.Year, DateTime.UtcNow.AddMonths(3).Month)),
+                Value = new PaymentDto(6500.00m,"USD"),
+                TransactionTimeStamp = new TransactionTimeStampDto(DateTime.UtcNow)
             };
 
         internal static ProcessPaymentRequest CreatePaymentRequest(
@@ -45,25 +29,12 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Shared
            };
 
         internal static CardDto CreateCardDto(int cvv, string number, CardExpirationDateDto expiration) =>
-            new CardDto
-            {
-                CVV = cvv,
-                Number = number,
-                Expiration = expiration
-            };
+            new CardDto(number, cvv, expiration);
 
         internal static CardExpirationDateDto CreateExpirationDateDto(int year, int month) =>
-            new CardExpirationDateDto
-            {
-                Month = month,
-                Year = year,
-            };
+            new CardExpirationDateDto(year,month);
 
         internal static PaymentDto CreateMoneyDto(decimal amount, string iso) =>
-            new PaymentDto
-            {
-                Amount = amount,
-                ISOCurrencyCode = iso
-            };
+            new PaymentDto(amount,iso);
     }
 }
