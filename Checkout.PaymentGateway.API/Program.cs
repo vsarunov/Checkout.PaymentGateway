@@ -1,5 +1,6 @@
 global using FastEndpoints;
 global using FastEndpoints.Validation;
+using Amido.Stacks.API.Middleware;
 using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Checkout.PaymentGateway.Infrastructure.Repositories.Payments;
 using FastEndpoints.Swagger;
@@ -17,6 +18,7 @@ builder.Services.AddSingleton<IPaymentRepository, InMemoryPaymentRepository>();
 
 var app = builder.Build();
 
+app.UseCorrelationId();
 app.UseAuthorization();
 app.UseFastEndpoints();
 app.UseOpenApi();
