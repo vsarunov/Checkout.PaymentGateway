@@ -18,7 +18,7 @@ namespace Checkout.AcquiringBank.Emulator
             ILogger log)
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var requestMoel = JsonConvert.DeserializeObject<Payment>(requestBody);
+            var requestMoel = JsonConvert.DeserializeObject<PaymentRoot>(requestBody);
 
             return new OkResult();
         }
