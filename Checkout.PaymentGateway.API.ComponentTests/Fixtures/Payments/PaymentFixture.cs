@@ -70,7 +70,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         internal void GivenStorageFailure()
         {
-            paymentRepository.WhenForAnyArgs(x => x.SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>())).Do(x => throw new Exception());
+            paymentRepository.WhenForAnyArgs(x => x.SaveAsync(Arg.Any<Domain.Payments.Aggregates.PaymentRoot>())).Do(x => throw new Exception());
         }
 
         internal void GivenPaymentAlreadyExists(ProcessPaymentRequest request)
@@ -91,7 +91,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         internal void ThenPaymentWasStored()
         {
-            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>());
+            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.PaymentRoot>());
         }
 
         internal async Task ThenAnErrorPropertyIsReturned(string fieldName)
@@ -115,30 +115,60 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         internal void ThenPaymentIsNotStored()
         {
-            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.Payment>());
+            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Any<Domain.Payments.Aggregates.PaymentRoot>());
         }
 
         internal void GivenAFieldIsSet(string fieldName, object value)
         {
             switch (fieldName)
             {
-                case nameof(ProcessPaymentRequest.CardDetails):
-                    paymentRequest.With(x => x.CardDetails, (CardDto)value);
+                case nameof(ProcessPaymentRequest.Payer):
+                    paymentRequest.With(x => x.Payer, (PayerDto)value);
                     break;
-                case nameof(ProcessPaymentRequest.CardDetails.CVV):
-                    paymentRequest.CardDetails.With(x => x.CVV, (int)value);
+                case nameof(ProcessPaymentRequest.Payer.Card):
+                    paymentRequest.Payer.With(x => x.Card, (CardDto)value);
+                    paymentRequest.Merchant.With(x => x.Card, (CardDto)value);
                     break;
-                case nameof(ProcessPaymentRequest.CardDetails.Number):
-                    paymentRequest.CardDetails.With(x => x.Number, (string)value);
+                case nameof(ProcessPaymentRequest.Payer.Card.CVV):
+                    paymentRequest.Payer.Card.With(x => x.CVV, (int)value);
+                    paymentRequest.Merchant.Card.With(x => x.CVV, (int)value);
                     break;
-                case nameof(ProcessPaymentRequest.CardDetails.Expiration):
-                    paymentRequest.CardDetails.With(x => x.Expiration, (CardExpirationDateDto)value);
+                case nameof(ProcessPaymentRequest.Payer.Card.Number):
+                    paymentRequest.Payer.Card.With(x => x.Number, (string)value);
+                    paymentRequest.Merchant.Card.With(x => x.Number, (string)value);
                     break;
-                case nameof(ProcessPaymentRequest.CardDetails.Expiration.Month):
-                    paymentRequest.CardDetails.Expiration.With(x => x.Month, (int)value);
+                case nameof(ProcessPaymentRequest.Payer.Card.Expiration):
+                    paymentRequest.Payer.Card.With(x => x.Expiration, (CardExpirationDateDto)value);
+                    paymentRequest.Merchant.Card.With(x => x.Expiration, (CardExpirationDateDto)value);
                     break;
-                case nameof(ProcessPaymentRequest.CardDetails.Expiration.Year):
-                    paymentRequest.CardDetails.Expiration.With(x => x.Year, (int)value);
+                case nameof(ProcessPaymentRequest.Payer.Card.Expiration.Month):
+                    paymentRequest.Payer.Card.Expiration.With(x => x.Month, (int)value);
+                    paymentRequest.Merchant.Card.Expiration.With(x => x.Month, (int)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Card.Expiration.Year):
+                    paymentRequest.Payer.Card.Expiration.With(x => x.Year, (int)value);
+                    paymentRequest.Merchant.Card.Expiration.With(x => x.Year, (int)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Address):
+                    paymentRequest.Payer.With(x => x.Address, (AddressDto)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Address.AddressLine):
+                    paymentRequest.Payer.Address.With(x => x.AddressLine, (string)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Address.PostCode):
+                    paymentRequest.Payer.Address.With(x => x.PostCode, (string)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Name):
+                    paymentRequest.Payer.With(x => x.Name, (NameDto)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Name.FirstName):
+                    paymentRequest.Payer.Name.With(x => x.FirstName, (string)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Payer.Name.LastName):
+                    paymentRequest.Payer.Name.With(x => x.LastName, (string)value);
+                    break;
+                case nameof(ProcessPaymentRequest.Merchant):
+                    paymentRequest.With(x => x.Merchant, (MerchantDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.Value):
                     paymentRequest.With(x => x.Value, (PaymentDto)value);

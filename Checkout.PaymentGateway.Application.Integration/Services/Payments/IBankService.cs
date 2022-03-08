@@ -4,5 +4,5 @@ namespace Checkout.PaymentGateway.Application.Integration.Payments.Services;
 
 public interface IBankService
 {
-    Task<PaymentProcessingResult> ProcessPayment(Domain.Payments.Aggregates.Payment payment);
+    Task<PaymentProcessingResult> ProcessPayment(Domain.Payments.Aggregates.PaymentRoot payment);
 }

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Checkout.PaymentGateway.Domain.Payments
+namespace Checkout.AcquiringBank.Models
 {
-    public record PaymentProcessingResult
+    internal class PaymentProcessingResult
     {
         [JsonConstructor]
         public PaymentProcessingResult(string paymentStatus)

@@ -15,9 +15,28 @@ namespace Checkout.PaymentGateway.API.Features.Payments.Validation
 
         public ProcessPaymentRequestValidator()
         {
-            RuleFor(x => x.CardDetails).NotNull().SetValidator(new CardDtoValidator());
+            RuleFor(x => x.Payer).NotNull().SetValidator(new PayerDtoValidator());
+            RuleFor(x => x.Merchant).NotNull().SetValidator(new MerchantDtoValidator());
             RuleFor(x => x.Value).NotNull().SetValidator(new PaymentDtoValidator());
             RuleFor(x => x.TransactionTimeStamp).NotNull().SetValidator(new TransactionTimeStampDtoValidator());
+        }
+
+        private class PayerDtoValidator: Validator<PayerDto>
+        {
+            public PayerDtoValidator()
+            {
+                RuleFor(x=>x.Address).NotNull().SetValidator(new AddressDtoValidator());
+                RuleFor(x=>x.Name).NotNull().SetValidator(new NameDtoValidator());
+                RuleFor(x=>x.Card).NotNull().SetValidator(new CardDtoValidator());
+            }
+        }
+
+        private class MerchantDtoValidator : Validator<MerchantDto>
+        {
+            public MerchantDtoValidator()
+            {
+                RuleFor(x => x.Card).NotNull().SetValidator(new CardDtoValidator());
+            }
         }
 
         private class TransactionTimeStampDtoValidator : Validator<TransactionTimeStampDto>
@@ -105,6 +124,24 @@ namespace Checkout.PaymentGateway.API.Features.Payments.Validation
             private bool BeInTheFuture(DateTime dateTime)
             {
                 return dateTime > DateTime.UtcNow.Date;
+            }
+        }
+
+        private class NameDtoValidator : Validator<NameDto>
+        {
+            public NameDtoValidator()
+            {
+                RuleFor(x => x.FirstName).NotEmpty();
+                RuleFor(x => x.LastName).NotEmpty();
+            }
+        }
+
+        private class AddressDtoValidator : Validator<AddressDto>
+        {
+            public AddressDtoValidator()
+            {
+                RuleFor(x => x.AddressLine).NotEmpty();
+                RuleFor(x => x.PostCode).NotEmpty();
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Checkout.AcquiringBank.Services
             this.bankDetails = bankDetails.Value;
         }
 
-        public Task<PaymentProcessingResult> ProcessPayment(PaymentGateway.Domain.Payments.Aggregates.Payment payment)
+        public Task<PaymentProcessingResult> ProcessPayment(PaymentGateway.Domain.Payments.Aggregates.PaymentRoot payment)
         {
             throw new NotImplementedException();
         }

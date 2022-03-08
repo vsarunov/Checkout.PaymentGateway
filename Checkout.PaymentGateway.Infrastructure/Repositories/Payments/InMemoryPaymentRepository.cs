@@ -6,17 +6,17 @@ namespace Checkout.PaymentGateway.Infrastructure.Repositories.Payments
     public class InMemoryPaymentRepository : IPaymentRepository
     {
         private static readonly Object @lock = new Object();
-        private static readonly Dictionary<Guid, Domain.Payments.Aggregates.Payment> storage = new Dictionary<Guid, Domain.Payments.Aggregates.Payment>();
+        private static readonly Dictionary<Guid, Domain.Payments.Aggregates.PaymentRoot> storage = new Dictionary<Guid, Domain.Payments.Aggregates.PaymentRoot>();
 
-        public async Task<Domain.Payments.Aggregates.Payment> GetByIdAsync(PaymentId id)
+        public async Task<Domain.Payments.Aggregates.PaymentRoot> GetByIdAsync(PaymentId id)
         {
             if (storage.ContainsKey(id.Value))
                 return await Task.FromResult(storage[id.Value]);
             else
-                return await Task.FromResult((Domain.Payments.Aggregates.Payment)null);
+                return await Task.FromResult((Domain.Payments.Aggregates.PaymentRoot)null);
         }
 
-        public async Task<bool> SaveAsync(Domain.Payments.Aggregates.Payment payment)
+        public async Task<bool> SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment)
         {
             if (payment == null)
                 return await Task.FromResult(false);
