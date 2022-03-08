@@ -1,6 +1,5 @@
 ﻿using Amido.Stacks.Testing.Extensions;
 using Checkout.PaymentGateway.API.ComponentTests.Mappers;
-using Checkout.PaymentGateway.API.ComponentTests.Shared;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Shared.Payments;
 using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
@@ -12,6 +11,9 @@ using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Checkout.AcquiringBank.Services;
+using Checkout.AcquiringBank.Configuration;
+using Checkout.PaymentGateway.API.ComponentTests.Setup;
 
 namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 {
@@ -19,16 +21,25 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
     {
         private ProcessPaymentRequest paymentRequest;
         private readonly IPaymentRepository paymentRepository;
-        private readonly IBankService bankService;
+
+        private readonly MockableHttpMessageHandler mockBankServiceHttpMessageHandler;
 
         public PaymentFixture() : base()
         {
             paymentRepository = Substitute.For<IPaymentRepository>();
+            mockBankServiceHttpMessageHandler = Substitute.ForPartsOf<MockableHttpMessageHandler>();
         }
 
         protected override void RegisterDependencies(IServiceCollection collection)
         {
+            collection.Configure<BankDetails>(x =>
+            {
+                x.Url = "www.acquiringbank.com";
+            });
+
             collection.AddSingleton<IPaymentRepository>(paymentRepository);
+
+            collection.AddHttpClient<IBankService, AcquiringBankService>().AddHttpMessageHandler(_ => mockBankServiceHttpMessageHandler);
         }
 
         internal void GivenAValidPayment(ProcessPaymentRequest request)

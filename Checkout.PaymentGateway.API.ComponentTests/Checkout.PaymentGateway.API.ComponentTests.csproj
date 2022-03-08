@@ -29,10 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Setup\" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <ProjectReference Include="..\Checkout.AcquiringBank\Checkout.AcquiringBank.csproj" />
 	  <ProjectReference Include="..\Checkout.PaymentGateway.API.Models\Checkout.PaymentGateway.API.Models.csproj" />
 	  <ProjectReference Include="..\Checkout.PaymentGateway.API\Checkout.PaymentGateway.API.csproj" />
 	  <ProjectReference Include="..\Checkout.PaymentGateway.Application.Integration\Checkout.PaymentGateway.Application.Integration.csproj" />
