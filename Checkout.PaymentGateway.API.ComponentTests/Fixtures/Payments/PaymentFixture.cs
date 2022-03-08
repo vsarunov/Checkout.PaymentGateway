@@ -4,6 +4,7 @@ using Checkout.PaymentGateway.API.ComponentTests.Shared;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Shared.Payments;
 using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
+using Checkout.PaymentGateway.Application.Integration.Payments.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
@@ -18,6 +19,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
     {
         private ProcessPaymentRequest paymentRequest;
         private readonly IPaymentRepository paymentRepository;
+        private readonly IBankService bankService;
 
         public PaymentFixture() : base()
         {
