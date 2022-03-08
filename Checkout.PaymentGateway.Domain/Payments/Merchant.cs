@@ -1,3 +1,3 @@
 ﻿namespace Checkout.PaymentGateway.Domain.Payments;
 
-public record struct Merchant(MerchantId Id, Card card);
+public record struct Merchant(MerchantId Id, Card Card);

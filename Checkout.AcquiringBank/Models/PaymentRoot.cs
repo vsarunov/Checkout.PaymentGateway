@@ -5,7 +5,7 @@ namespace Checkout.AcquiringBank.Models
     internal class PaymentRoot
     {
         [JsonConstructor]
-        private PaymentRoot(PaymentId id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
+        private PaymentRoot(Guid id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
         {
             Value = value;
             Id = id;
@@ -15,12 +15,12 @@ namespace Checkout.AcquiringBank.Models
             CorrelationId = correlationId;
         }
 
-        public static PaymentRoot Create(PaymentId id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
+        public static PaymentRoot Create(Guid id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
         {
             return new PaymentRoot(id, payer, merchant, value, timeStamp, correlationId);
         }
 
-        public PaymentId Id { get; init; }
+        public Guid Id { get; init; }
         public Payment Value { get; init; }
         public Payer Payer { get; init; }
         public Merchant Merchant { get; init; }
