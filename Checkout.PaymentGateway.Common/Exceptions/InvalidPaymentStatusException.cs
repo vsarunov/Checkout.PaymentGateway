@@ -4,7 +4,7 @@ namespace Checkout.PaymentGateway.Common.Exceptions;
 
 public class InvalidPaymentStatusException : ApplicationExceptionBase
 {
-    private InvalidPaymentStatusException(Exceptions.ExceptionCode exceptionCode, string message) : base(message)
+    private InvalidPaymentStatusException(ExceptionCode exceptionCode, string message) : base(message)
     {
         HttpStatusCode = (int)ExceptionCodeToHttpStatusCodeConverter.GetHttpStatusCode(exceptionCode);
     }

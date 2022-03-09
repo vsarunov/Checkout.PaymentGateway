@@ -32,6 +32,8 @@ namespace Checkout.AcquiringBank.UnitTests.Services
 
             aqcuiringBankLoggerMock = Substitute.For<MockLogger<AcquiringBankService>>();
 
+            aqcuiringBankLoggerMock.IsEnabled(Arg.Any<LogLevel>()).ReturnsForAnyArgs(true);
+
             bankDetails = new BankDetails { Url = "https://stackoverflow.com" };
 
             IOptions<BankDetails> bankOptions = Options.Create(bankDetails);
@@ -159,7 +161,7 @@ namespace Checkout.AcquiringBank.UnitTests.Services
 
             await sut.ProcessPayment(payment);
 
-            aqcuiringBankLoggerMock.Received().Log(LogLevel.Error, 1000, Arg.Any<string>());
+            aqcuiringBankLoggerMock.Received().Log(LogLevel.Error, 6300, Arg.Any<string>());
         }
 
 
@@ -205,7 +207,7 @@ namespace Checkout.AcquiringBank.UnitTests.Services
 
             await sut.ProcessPayment(payment);
 
-            aqcuiringBankLoggerMock.Received().Log(LogLevel.Error, 1000, Arg.Any<string>());
+            aqcuiringBankLoggerMock.Received().Log(LogLevel.Error, 6300, Arg.Any<string>());
         }
 
         [Fact]

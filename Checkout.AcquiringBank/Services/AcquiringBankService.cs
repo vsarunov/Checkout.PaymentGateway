@@ -2,6 +2,7 @@
 using Checkout.AcquiringBank.Mappers;
 using Checkout.AcquiringBank.Models;
 using Checkout.PaymentGateway.Application.Integration.Payments.Services;
+using Checkout.PaymentGateway.Common.LogDefinitions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text;
@@ -36,8 +37,9 @@ namespace Checkout.AcquiringBank.Services
 
             var response = await httpClient.SendAsync(httpRequestMessage);
 
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
+                logger.FailedBankPaymentProcessing((int)response.StatusCode);
                 return new Domain.PaymentProcessingResult(Domain.Status.Failed);
             }
 
