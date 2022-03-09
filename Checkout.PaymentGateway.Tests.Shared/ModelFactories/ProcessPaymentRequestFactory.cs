@@ -1,12 +1,11 @@
 ﻿using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Shared.Payments;
-using System;
 
-namespace Checkout.PaymentGateway.API.ComponentTests.Shared
+namespace Checkout.PaymentGateway.Tests.Shared.ModelFactories
 {
-    internal class ProcessPaymentFactory
+    public class ProcessPaymentRequestFactory
     {
-        internal static ProcessPaymentRequest CreateDefaultPaymentRequest() =>
+        public static ProcessPaymentRequest CreateDefaultPaymentRequest() =>
             new ProcessPaymentRequest()
             {
                 Id = new PaymentId(Guid.NewGuid()),

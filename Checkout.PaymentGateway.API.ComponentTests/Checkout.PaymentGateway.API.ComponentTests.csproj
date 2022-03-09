@@ -33,6 +33,7 @@
 	  <ProjectReference Include="..\Checkout.PaymentGateway.API.Models\Checkout.PaymentGateway.API.Models.csproj" />
 	  <ProjectReference Include="..\Checkout.PaymentGateway.API\Checkout.PaymentGateway.API.csproj" />
 	  <ProjectReference Include="..\Checkout.PaymentGateway.Application.Integration\Checkout.PaymentGateway.Application.Integration.csproj" />
+	  <ProjectReference Include="..\Checkout.PaymentGateway.Tests.Shared\Checkout.PaymentGateway.Tests.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

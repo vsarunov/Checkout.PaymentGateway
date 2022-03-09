@@ -1,5 +1,4 @@
 ﻿using Amido.Stacks.Testing.Extensions;
-using Checkout.PaymentGateway.API.ComponentTests.Mappers;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Shared.Payments;
 using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
@@ -13,7 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Checkout.AcquiringBank.Services;
 using Checkout.AcquiringBank.Configuration;
-using Checkout.PaymentGateway.API.ComponentTests.Setup;
+using Checkout.PaymentGateway.Tests.Shared.Mocks;
+using Checkout.PaymentGateway.Tests.Shared.Mappers;
 
 namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 {
