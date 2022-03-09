@@ -26,11 +26,11 @@ public static class PaymentResponseToDomainMapper
     public static Name MapRequestNameToDomain(this NameDto nameDto) =>
         new Name(nameDto.FirstName, nameDto.LastName, nameDto.MiddleName);
 
-    public static Address MapRequestAddressToDomain(this AddressDto addressDto) =>
-        new Address(addressDto.AddressLine, addressDto.PostCode);
+    public static Domain.Payments.Address MapRequestAddressToDomain(this API.Models.Shared.Payments.AddressDto addressDto) =>
+        new Domain.Payments.Address(addressDto.AddressLine, addressDto.PostCode);
 
-    public static Card MapRequestCardToDomain(this CardDto cardDto) =>
-        new Card(cardDto.Number, cardDto.CVV, cardDto.Expiration.MapRequestCardExpirationToDomain());
+    public static Domain.Payments.Card MapRequestCardToDomain(this API.Models.Shared.Payments.CardDto cardDto) =>
+        new Domain.Payments.Card(cardDto.Number, cardDto.CVV, cardDto.Expiration.MapRequestCardExpirationToDomain());
 
     public static CardExpirationDate MapRequestCardExpirationToDomain(this CardExpirationDateDto cardExpirationDateDto) =>
         new CardExpirationDate(cardExpirationDateDto.Year, cardExpirationDateDto.Month);
