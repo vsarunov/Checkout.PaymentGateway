@@ -146,8 +146,8 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
                     paymentRequest.With(x => x.Payer, (PayerDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.Payer.Card):
-                    paymentRequest.Payer.With(x => x.Card, (CardDto)value);
-                    paymentRequest.Merchant.With(x => x.Card, (CardDto)value);
+                    paymentRequest.Payer.With(x => x.Card, (Models.Shared.Payments.CardDto)value);
+                    paymentRequest.Merchant.With(x => x.Card, (Models.Shared.Payments.CardDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.Payer.Card.CVV):
                     paymentRequest.Payer.Card.With(x => x.CVV, (int)value);
@@ -170,7 +170,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
                     paymentRequest.Merchant.Card.Expiration.With(x => x.Year, (int)value);
                     break;
                 case nameof(ProcessPaymentRequest.Payer.Address):
-                    paymentRequest.Payer.With(x => x.Address, (AddressDto)value);
+                    paymentRequest.Payer.With(x => x.Address, (Models.Shared.Payments.AddressDto)value);
                     break;
                 case nameof(ProcessPaymentRequest.Payer.Address.AddressLine):
                     paymentRequest.Payer.Address.With(x => x.AddressLine, (string)value);

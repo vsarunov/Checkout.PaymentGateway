@@ -12,6 +12,8 @@
     <PackageReference Include="Amido.Stacks.API" Version="0.2.21" />
     <PackageReference Include="FastEndpoints" Version="3.9.1" />
     <PackageReference Include="FastEndpoints.Swagger" Version="3.9.1" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
@@ -19,7 +21,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Checkout.AcquiringBank\Checkout.AcquiringBank.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.API.Models\Checkout.PaymentGateway.API.Models.csproj" />
+    <ProjectReference Include="..\Checkout.PaymentGateway.Application.CommandHandlers\Checkout.PaymentGateway.Application.CommandHandlers.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.Application.Integration\Checkout.PaymentGateway.Application.Integration.csproj" />
+    <ProjectReference Include="..\Checkout.PaymentGateway.Application.QueryHandlers\Checkout.PaymentGateway.Application.QueryHandlers.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.Infrastructure\Checkout.PaymentGateway.Infrastructure.csproj" />
   </ItemGroup>
 
