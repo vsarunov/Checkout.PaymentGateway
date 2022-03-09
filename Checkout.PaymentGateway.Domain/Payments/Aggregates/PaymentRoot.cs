@@ -5,26 +5,27 @@ using System.Text.Json.Serialization;
 
 namespace Checkout.PaymentGateway.Domain.Payments.Aggregates;
 
-public class Payment : AggregateRoot<PaymentId>
+public class PaymentRoot : AggregateRoot<PaymentId>
 {
     [JsonConstructor]
-    private Payment(PaymentId id, Payments.Payment value, Card card, TransactionTimeStamp timeStamp,Guid correlationId)
+    private PaymentRoot(PaymentId id, Payer payer, Merchant merchant, Payments.Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
     {
         Value = value;
         Id = id;
-        Card = card;
         TimeStamp = timeStamp;
+        Payer = payer;
+        Merchant = merchant;
         CorrelationId = correlationId;
     }
 
-    public static Payment Create(PaymentId id, Payments.Payment value, Card card, TransactionTimeStamp timeStamp, Guid correlationId)
+    public static PaymentRoot Create(PaymentId id, Payer payer, Merchant merchant, Payments.Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
     {
-        return new Payment(id, value, card, timeStamp, correlationId);
+        return new PaymentRoot(id, payer, merchant, value, timeStamp, correlationId);
     }
 
     public Payments.Payment Value { get; init; }
-    public PaymentId Id { get; init; }
-    public Card Card { get; init; }
+    public Payer Payer { get; init; }
+    public Merchant Merchant { get; init; }
     public TransactionTimeStamp TimeStamp { get; init; }
     public Status Status { get; private set; } = Status.ProcessingStarted;
     public Guid CorrelationId { get; init; }

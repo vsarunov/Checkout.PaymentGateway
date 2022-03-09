@@ -1,5 +1,8 @@
-﻿namespace Checkout.PaymentGateway.Domain.Payments;
+﻿using System.Text.Json.Serialization;
 
+namespace Checkout.PaymentGateway.Domain.Payments;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Status
 {
     ProcessingStarted = 0,
