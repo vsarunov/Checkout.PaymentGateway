@@ -22,6 +22,7 @@ builder.Services.AddHttpClient<IBankService, AcquiringBankService>();
 var app = builder.Build();
 
 app.UseCorrelationId();
+app.UseCustomExceptionHandler(app.Logger);
 app.UseAuthorization();
 app.UseFastEndpoints();
 app.UseOpenApi();
