@@ -125,7 +125,7 @@ namespace Checkout.AcquiringBank.UnitTests.Services
         }
 
         [Fact]
-        public async Task ProcessPayment_WhenPaymentFailed_ShouldReturnFailedStatus()
+        public async Task ProcessPayment_WhenPaymentFailedWithInternalServerError_ShouldReturnFailedStatus()
         {
             var payment = CreateDomainPayment();
 
@@ -144,7 +144,7 @@ namespace Checkout.AcquiringBank.UnitTests.Services
         }
 
         [Fact]
-        public async Task ProcessPayment_WhenPaymentFailed_MessageShouldHaveBeenSent()
+        public async Task ProcessPayment_WhenPaymentFailedWithInternalServerError_MessageShouldHaveBeenSent()
         {
             var payment = CreateDomainPayment();
 
@@ -162,7 +162,7 @@ namespace Checkout.AcquiringBank.UnitTests.Services
         }
 
         [Fact]
-        public async Task ProcessPayment_WhenPaymentFailed_ShouldLogAnError()
+        public async Task ProcessPayment_WhenPaymentFailedWithInternalServerError_ShouldLogAnError()
         {
             var payment = CreateDomainPayment();
 
@@ -171,6 +171,62 @@ namespace Checkout.AcquiringBank.UnitTests.Services
             var paymentProcessingResult = new PaymentProcessingResult(paymentStatus);
 
             var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
+            aqcuiringBankHttpClientMock.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
+
+            await sut.ProcessPayment(payment);
+
+            aqcuiringBankLoggerMock.Received().Log(LogLevel.Error, 1000, Arg.Any<string>());
+        }
+
+
+        [Fact]
+        public async Task ProcessPayment_WhenPaymentFailedWithBadRequest_ShouldReturnFailedStatus()
+        {
+            var payment = CreateDomainPayment();
+
+            var paymentStatus = Status.Failed.ToString();
+
+            var paymentProcessingResult = new PaymentProcessingResult(paymentStatus);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            aqcuiringBankHttpClientMock.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
+
+            var response = await sut.ProcessPayment(payment);
+
+            response.Should().NotBeNull();
+            response.Should().BeEquivalentTo(paymentProcessingResult);
+        }
+
+        [Fact]
+        public async Task ProcessPayment_WhenPaymentFailedWithBadRequest_MessageShouldHaveBeenSent()
+        {
+            var payment = CreateDomainPayment();
+
+            var paymentStatus = Status.Failed.ToString();
+
+            var paymentProcessingResult = new PaymentProcessingResult(paymentStatus);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            aqcuiringBankHttpClientMock.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
+
+            await sut.ProcessPayment(payment);
+
+            await aqcuiringBankHttpClientMock.ReceivedWithAnyArgs().SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment")));
+        }
+
+        [Fact]
+        public async Task ProcessPayment_WhenPaymentFailedWithBadRequest_ShouldLogAnError()
+        {
+            var payment = CreateDomainPayment();
+
+            var paymentStatus = Status.Failed.ToString();
+
+            var paymentProcessingResult = new PaymentProcessingResult(paymentStatus);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
             aqcuiringBankHttpClientMock.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
 
