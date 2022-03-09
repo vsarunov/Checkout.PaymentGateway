@@ -14,6 +14,10 @@ using Checkout.AcquiringBank.Services;
 using Checkout.AcquiringBank.Configuration;
 using Checkout.PaymentGateway.Tests.Shared.Mocks;
 using Checkout.PaymentGateway.Tests.Shared.Mappers;
+using Checkout.PaymentGateway.Domain.Payments;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 {
@@ -55,17 +59,33 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         internal void GivenBankRejectsTransactions()
         {
-            // reject payment
+            var paymentProcessingResult = new PaymentProcessingResult(Status.Rejected);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(paymentProcessingResult))
+            };
+
+            mockBankServiceHttpMessageHandler.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
         }
 
         internal void GivenBankRequestIsFailing()
         {
-            // bank request is failing
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
+            mockBankServiceHttpMessageHandler.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
         }
 
         internal void GivenBankAcceptsPayment()
         {
-            // bank request is successful
+            var paymentProcessingResult = new PaymentProcessingResult(Status.Successful);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(paymentProcessingResult))
+            };
+
+            mockBankServiceHttpMessageHandler.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
         }
 
         internal void GivenStorageFailure()
@@ -105,7 +125,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         internal void ThenPaymentWasSubmittedToBankSuccessfully()
         {
-            // check if was submitted to bank
+            mockBankServiceHttpMessageHandler.ReceivedWithAnyArgs().SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment")));
         }
 
         internal void ThenPaymentIsAsExpected()

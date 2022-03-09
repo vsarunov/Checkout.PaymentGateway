@@ -5,11 +5,11 @@ namespace Checkout.PaymentGateway.Domain.Payments
     public record PaymentProcessingResult
     {
         [JsonConstructor]
-        public PaymentProcessingResult(string paymentStatus)
+        public PaymentProcessingResult(Status paymentStatus)
         {
             PaymentStatus = paymentStatus;
         }
 
-        public string PaymentStatus { get; init; }
+        public Status PaymentStatus { get; init; }
     }
 }

@@ -9,6 +9,6 @@ public class MockableHttpMessageHandler : DelegatingHandler
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        return SendAsync(request, cancellationToken);
+        return SendAsync(request);
     }
 }

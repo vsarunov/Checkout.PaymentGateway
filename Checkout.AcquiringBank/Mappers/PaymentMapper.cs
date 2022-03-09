@@ -1,10 +1,11 @@
 ﻿using Checkout.AcquiringBank.Models;
+using Checkout.PaymentGateway.Common.Exceptions;
 
 namespace Checkout.AcquiringBank.Mappers
 {
     internal static class PaymentMapper
     {
-        internal static  PaymentRoot ToBankPayment(this PaymentGateway.Domain.Payments.Aggregates.PaymentRoot payment) =>
+        internal static PaymentRoot ToBankPayment(this PaymentGateway.Domain.Payments.Aggregates.PaymentRoot payment) =>
         PaymentRoot.Create(
             payment.Id.Value,
             payment.Payer.MapToBankPayer(),
@@ -37,5 +38,19 @@ namespace Checkout.AcquiringBank.Mappers
 
         internal static TransactionTimeStamp MapToPaymentTransactionTime(this PaymentGateway.Domain.Payments.TransactionTimeStamp transactionTimeStamp) =>
             new TransactionTimeStamp(transactionTimeStamp.TimeStamp);
+
+        internal static PaymentGateway.Domain.Payments.PaymentProcessingResult MapToDomain(this PaymentProcessingResult paymentProcessingResult)
+        {
+            PaymentGateway.Domain.Payments.Status paymentStatus;
+            var isValidStatus = Enum.TryParse(paymentProcessingResult.PaymentStatus, out paymentStatus);
+
+            if (!isValidStatus)
+            {
+                InvalidPaymentStatusException.Raise();
+            }
+
+            return new PaymentGateway.Domain.Payments.PaymentProcessingResult(paymentStatus);
+        }
+
     }
 }

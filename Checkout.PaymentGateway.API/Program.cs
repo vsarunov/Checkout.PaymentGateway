@@ -1,6 +1,9 @@
 global using FastEndpoints;
 global using FastEndpoints.Validation;
 using Amido.Stacks.API.Middleware;
+using Checkout.AcquiringBank.Configuration;
+using Checkout.AcquiringBank.Services;
+using Checkout.PaymentGateway.Application.Integration.Payments.Services;
 using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Checkout.PaymentGateway.Infrastructure.Repositories.Payments;
 using FastEndpoints.Swagger;
@@ -9,12 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddFastEndpoints();
 
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDoc();
+
+builder.Services.Configure<BankDetails>(builder.Configuration.GetSection("BankDetails"));
 builder.Services.AddSingleton<IPaymentRepository, InMemoryPaymentRepository>();
+builder.Services.AddHttpClient<IBankService, AcquiringBankService>();
 
 var app = builder.Build();
 
