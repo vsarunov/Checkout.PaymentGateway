@@ -14,6 +14,7 @@ using Xunit;
 
 namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 {
+    [Trait("TestType", "UnitTest")]
     public class ProcessPaymentCommandHandlerTests
     {
         private readonly ProcessPaymentCommandHandler sut;
@@ -78,7 +79,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
-            var result = await sut.Handle(command, CancellationToken.None);
+            await sut.Handle(command, CancellationToken.None);
 
             loggerMock.Received().Log(LogLevel.Error, 6300, Arg.Any<string>());
         }
@@ -112,7 +113,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
-            var result = await sut.Handle(command, CancellationToken.None);
+            await sut.Handle(command, CancellationToken.None);
 
             loggerMock.Received().Log(LogLevel.Error, 6300, Arg.Any<string>());
         }

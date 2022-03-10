@@ -1,12 +1,14 @@
 ﻿using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Responses.Payments;
 using Checkout.PaymentGateway.Common.LogDefinitions;
+using MediatR;
 
 namespace Checkout.PaymentGateway.API.Features.Payments;
 
 public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest, PaymentResponse>
 {
     public ILogger<GetPaymentByIdEndpoint> logger { get; set; }
+    public IMediator mediator { get; set; }
 
     public override void Configure()
     {

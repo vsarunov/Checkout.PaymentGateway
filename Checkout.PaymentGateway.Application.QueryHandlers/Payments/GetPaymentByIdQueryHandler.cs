@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Checkout.PaymentGateway.Application.QueryHandlers.Payments;
 
-public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Either<PaymentRoot, Failure>>
+public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Option<PaymentRoot>>
 {
     private readonly ILogger<GetPaymentByIdQueryHandler> logger;
     private readonly IPaymentRepository paymentRepository;
@@ -18,7 +18,7 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, E
         this.paymentRepository = paymentRepository;
     }
 
-    public Task<Either<PaymentRoot, Failure>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
+    public Task<Option<PaymentRoot>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
