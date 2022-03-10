@@ -1,15 +1,12 @@
 ﻿using Checkout.PaymentGateway.Domain.Payments.Aggregates;
+using Checkout.PaymentGateway.Domain.Shared;
+using LanguageExt;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Checkout.PaymentGateway.Application.QueryHandlers.Payments;
 
-public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, PaymentRoot>
+public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Either<PaymentRoot, Failure>>
 {
     private readonly ILogger<GetPaymentByIdQueryHandler> logger;
 
@@ -18,7 +15,7 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, P
         logger = logger;
     }
 
-    public async Task<PaymentRoot> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
+    public Task<Either<PaymentRoot, Failure>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

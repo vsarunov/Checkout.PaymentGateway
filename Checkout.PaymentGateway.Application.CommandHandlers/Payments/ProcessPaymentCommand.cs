@@ -1,10 +1,12 @@
 ﻿using Checkout.PaymentGateway.Common.Operations;
 using Checkout.PaymentGateway.CQRS.Models.Payments;
+using Checkout.PaymentGateway.Domain.Shared;
+using LanguageExt;
 using MediatR;
 
 namespace Checkout.PaymentGateway.Application.CommandHandlers.Payments;
 
-public class ProcessPaymentCommand : IRequest
+public class ProcessPaymentCommand : IRequest<Option<Failure>>
 {
     private ProcessPaymentCommand(Guid correlationId, PaymentId id, Payer payer, Payment value, Merchant merchant, TransactionTimeStamp transactionTimeStamp)
     {
