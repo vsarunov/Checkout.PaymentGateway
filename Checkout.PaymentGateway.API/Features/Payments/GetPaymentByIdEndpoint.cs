@@ -1,15 +1,21 @@
 ﻿using Checkout.PaymentGateway.API.Features.Payments.Mappings;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Responses.Payments;
-using Checkout.PaymentGateway.Common.LogDefinitions;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using MediatR;
 
 namespace Checkout.PaymentGateway.API.Features.Payments;
 
 public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest, PaymentResponse>
 {
-    public ILogger<GetPaymentByIdEndpoint> logger { get; set; }
-    public IMediator mediator { get; set; }
+    private readonly ILogger<GetPaymentByIdEndpoint> logger;
+    private readonly IMediator mediator;
+    
+    public GetPaymentByIdEndpoint(IMediator mediator,ILogger<GetPaymentByIdEndpoint> logger)
+    {
+        this.logger = logger;
+        this.mediator = mediator;
+    }
 
     public override void Configure()
     {

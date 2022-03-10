@@ -2,7 +2,7 @@
 using Checkout.AcquiringBank.Mappers;
 using Checkout.AcquiringBank.Models;
 using Checkout.PaymentGateway.Application.Integration.Payments.Services;
-using Checkout.PaymentGateway.Common.LogDefinitions;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text;

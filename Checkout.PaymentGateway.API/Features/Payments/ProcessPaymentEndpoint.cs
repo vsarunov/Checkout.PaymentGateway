@@ -1,15 +1,21 @@
 ﻿using Checkout.PaymentGateway.API.Features.Payments.Mappings;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
-using Checkout.PaymentGateway.Common.LogDefinitions;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using MediatR;
 
 namespace Checkout.PaymentGateway.API.Features.Payments;
 
 public class ProcessPaymentEndpoint : Endpoint<ProcessPaymentRequest>
 {
-    public ILogger<ProcessPaymentEndpoint> logger { get; set; }
-    public IMediator mediator { get; set; }
-
+    private readonly ILogger<ProcessPaymentEndpoint> logger;
+    private readonly IMediator mediator;
+    
+    public ProcessPaymentEndpoint(IMediator mediator,ILogger<ProcessPaymentEndpoint> logger)
+    {
+        this.logger = logger;
+        this.mediator = mediator;
+    }
+    
     public override void Configure()
     {
         Verbs(Http.POST);
