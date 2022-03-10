@@ -49,7 +49,7 @@ public class PaymentRoot : AggregateRoot<PaymentId>
         }
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         var payment = obj as PaymentRoot;
 

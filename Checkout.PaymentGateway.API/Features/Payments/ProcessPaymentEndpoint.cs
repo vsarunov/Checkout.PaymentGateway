@@ -1,4 +1,5 @@
-﻿using Checkout.PaymentGateway.API.Models.Requests.Payments;
+﻿using Checkout.PaymentGateway.API.Features.Payments.Mappings;
+using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.Common.LogDefinitions;
 using MediatR;
 
@@ -19,6 +20,10 @@ public class ProcessPaymentEndpoint : Endpoint<ProcessPaymentRequest>
     public override async Task HandleAsync(ProcessPaymentRequest req, CancellationToken ct)
     {
         logger.ReceivedProcessPaymentRequest();
+
+        var command = req.ToCommand();
+
+        var paymentProcessingResult = await mediator.Send(command);
 
         await SendAsync(StatusCodes.Status200OK);
     }

@@ -62,7 +62,7 @@ namespace Checkout.PaymentGateway.Application.QueryHandlers.UnitTests.Payments
         }
 
         private static GetPaymentByIdQuery CreateQuery() =>
-            GetPaymentByIdQuery.Create(Guid.NewGuid(), Guid.NewGuid());
+            GetPaymentByIdQuery.Create(new CQRS.Models.Payments.PaymentId(Guid.NewGuid()), Guid.NewGuid());
 
         private static PaymentRoot CreateDomainPayment()
         {

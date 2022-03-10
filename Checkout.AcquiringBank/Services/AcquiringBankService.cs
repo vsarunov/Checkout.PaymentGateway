@@ -9,44 +9,43 @@ using System.Text;
 using System.Text.Json;
 using Domain = Checkout.PaymentGateway.Domain.Payments;
 
-namespace Checkout.AcquiringBank.Services
+namespace Checkout.AcquiringBank.Services;
+
+public class AcquiringBankService : IBankService
 {
-    public class AcquiringBankService : IBankService
+    private const string ContentType = "application/json";
+
+    private readonly HttpClient httpClient;
+    private readonly BankDetails bankDetails;
+    private readonly ILogger<AcquiringBankService> logger;
+
+    public AcquiringBankService(HttpClient httpClient, ILogger<AcquiringBankService> logger, IOptions<BankDetails> bankDetails)
     {
-        private const string ContentType = "application/json";
+        this.httpClient = httpClient;
+        this.bankDetails = bankDetails.Value;
+        this.logger = logger;
+    }
 
-        private readonly HttpClient httpClient;
-        private readonly BankDetails bankDetails;
-        private readonly ILogger<AcquiringBankService> logger;
+    public async Task<Domain.PaymentProcessingResult> ProcessPayment(Domain.Aggregates.PaymentRoot payment)
+    {
+        var paymentRequest = payment.ToBankPayment();
 
-        public AcquiringBankService(HttpClient httpClient, ILogger<AcquiringBankService> logger, IOptions<BankDetails> bankDetails)
+        var uri = $"{bankDetails.Url}/v1/process-payment";
+
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+        httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(paymentRequest), Encoding.UTF8, ContentType);
+
+        var response = await httpClient.SendAsync(httpRequestMessage);
+
+        if (!response.IsSuccessStatusCode)
         {
-            this.httpClient = httpClient;
-            this.bankDetails = bankDetails.Value;
-            this.logger = logger;
+            logger.FailedBankPaymentProcessing((int)response.StatusCode);
+            return new Domain.PaymentProcessingResult(Domain.Status.Failed);
         }
 
-        public async Task<Domain.PaymentProcessingResult> ProcessPayment(Domain.Aggregates.PaymentRoot payment)
-        {
-            var paymentRequest = payment.ToBankPayment();
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var paymentProcessingResult = JsonSerializer.Deserialize<PaymentProcessingResult>(responseBody);
 
-            var uri = $"{bankDetails.Url}/v1/process-payment";
-
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-            httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(paymentRequest), Encoding.UTF8, ContentType);
-
-            var response = await httpClient.SendAsync(httpRequestMessage);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                logger.FailedBankPaymentProcessing((int)response.StatusCode);
-                return new Domain.PaymentProcessingResult(Domain.Status.Failed);
-            }
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var paymentProcessingResult = JsonSerializer.Deserialize<PaymentProcessingResult>(responseBody);
-
-            return paymentProcessingResult.MapToDomain();
-        }
+        return paymentProcessingResult.MapToDomain();
     }
 }
