@@ -1,4 +1,5 @@
-﻿using Checkout.PaymentGateway.Domain.Payments.Aggregates;
+﻿using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
+using Checkout.PaymentGateway.Domain.Payments.Aggregates;
 using Checkout.PaymentGateway.Domain.Shared;
 using LanguageExt;
 using MediatR;
@@ -9,10 +10,12 @@ namespace Checkout.PaymentGateway.Application.QueryHandlers.Payments;
 public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Either<PaymentRoot, Failure>>
 {
     private readonly ILogger<GetPaymentByIdQueryHandler> logger;
+    private readonly IPaymentRepository paymentRepository;
 
-    public GetPaymentByIdQueryHandler(ILogger<GetPaymentByIdQueryHandler> logger)
+    public GetPaymentByIdQueryHandler(IPaymentRepository paymentRepository, ILogger<GetPaymentByIdQueryHandler> logger)
     {
-        logger = logger;
+        this.logger = logger;
+        this.paymentRepository = paymentRepository;
     }
 
     public Task<Either<PaymentRoot, Failure>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
