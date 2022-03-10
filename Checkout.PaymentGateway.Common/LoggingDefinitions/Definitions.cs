@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Checkout.PaymentGateway.Common.Events;
 
-namespace Checkout.PaymentGateway.Common.LogDefinitions;
+namespace Checkout.PaymentGateway.Common.LoggingDefinitions;
 
 internal static class Definitions
 {

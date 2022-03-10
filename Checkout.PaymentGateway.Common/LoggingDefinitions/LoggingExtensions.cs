@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Checkout.PaymentGateway.Common.LogDefinitions;
+namespace Checkout.PaymentGateway.Common.LoggingDefinitions;
 
 public static class LoggingExtensions
 {

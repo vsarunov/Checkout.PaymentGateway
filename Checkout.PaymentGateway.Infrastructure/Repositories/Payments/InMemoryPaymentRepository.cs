@@ -1,5 +1,5 @@
 ﻿using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
-using Checkout.PaymentGateway.Common.LogDefinitions;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using Checkout.PaymentGateway.Domain.Payments;
 using Microsoft.Extensions.Logging;
 
