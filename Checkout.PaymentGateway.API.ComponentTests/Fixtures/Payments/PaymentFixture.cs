@@ -36,14 +36,14 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
 
         protected override void RegisterDependencies(IServiceCollection collection)
         {
-            collection.Configure<BankDetails>(x =>
-            {
-                x.Url = "www.acquiringbank.com";
-            });
+            //collection.Configure<BankDetails>(x =>
+            //{
+            //    x.Url = "www.acquiringbank.com";
+            //});
 
-            collection.AddSingleton<IPaymentRepository>(paymentRepository);
+            //collection.AddSingleton<IPaymentRepository>(paymentRepository);
 
-            collection.AddHttpClient<IBankService, AcquiringBankService>().AddHttpMessageHandler(_ => mockBankServiceHttpMessageHandler);
+            //collection.AddHttpClient<IBankService, AcquiringBankService>().AddHttpMessageHandler(_ => mockBankServiceHttpMessageHandler);
         }
 
         internal void GivenAValidPayment(ProcessPaymentRequest request)

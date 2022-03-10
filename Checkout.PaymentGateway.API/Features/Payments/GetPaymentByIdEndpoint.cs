@@ -1,4 +1,5 @@
-﻿using Checkout.PaymentGateway.API.Models.Requests.Payments;
+﻿using Checkout.PaymentGateway.API.Features.Payments.Mappings;
+using Checkout.PaymentGateway.API.Models.Requests.Payments;
 using Checkout.PaymentGateway.API.Models.Responses.Payments;
 using Checkout.PaymentGateway.Common.LogDefinitions;
 using MediatR;
@@ -20,6 +21,10 @@ public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest, PaymentRespons
     public override async Task HandleAsync(GetPaymentRequest req, CancellationToken ct)
     {
         logger.ReceivedGetPaymentByIdRequest();
+
+        var query = req.ToQuery();
+
+        var payment = await mediator.Send(query);
 
         await SendAsync(new PaymentResponse(), StatusCodes.Status200OK);
     }

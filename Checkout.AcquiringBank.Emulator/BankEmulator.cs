@@ -5,8 +5,8 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Checkout.AcquiringBank.Emulator.Models;
+using System.Text.Json;
 
 namespace Checkout.AcquiringBank.Emulator
 {
@@ -18,7 +18,7 @@ namespace Checkout.AcquiringBank.Emulator
             ILogger log)
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var requestMoel = JsonConvert.DeserializeObject<PaymentRoot>(requestBody);
+            var requestMoel = JsonSerializer.Deserialize<PaymentRoot>(requestBody);
 
             return new OkResult();
         }

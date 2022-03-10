@@ -8,13 +8,13 @@ namespace Checkout.PaymentGateway.Application.QueryHandlers.Payments;
 
 public class GetPaymentByIdQuery : IRequest<Option<PaymentRoot>>
 {
-    private GetPaymentByIdQuery(Guid id, Guid correlationId)
+    private GetPaymentByIdQuery(PaymentId id, Guid correlationId)
     {
-        Id = new PaymentId(id);
+        Id = id;
         CorrelationId = correlationId;
     }
 
-    public static GetPaymentByIdQuery Create(Guid id, Guid correlationId) => new GetPaymentByIdQuery(id, correlationId);
+    public static GetPaymentByIdQuery Create(PaymentId id, Guid correlationId) => new GetPaymentByIdQuery(id, correlationId);
 
     public PaymentId Id { get; init; }
 
