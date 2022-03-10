@@ -1,4 +1,4 @@
-﻿namespace Checkout.PaymentGateway.Application.CommandHandlers.Models.Payments;
+﻿namespace Checkout.PaymentGateway.CQRS.Models.Payments;
 
 [StronglyTypedId(jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 public partial struct MerchantId { }

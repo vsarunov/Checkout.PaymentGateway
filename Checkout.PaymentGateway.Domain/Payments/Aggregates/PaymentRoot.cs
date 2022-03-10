@@ -8,7 +8,7 @@ namespace Checkout.PaymentGateway.Domain.Payments.Aggregates;
 public class PaymentRoot : AggregateRoot<PaymentId>
 {
     [JsonConstructor]
-    private PaymentRoot(PaymentId id, Payer payer, Merchant merchant, Payments.Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
+    private PaymentRoot(PaymentId id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
     {
         Value = value;
         Id = id;
@@ -18,12 +18,12 @@ public class PaymentRoot : AggregateRoot<PaymentId>
         CorrelationId = correlationId;
     }
 
-    public static PaymentRoot Create(PaymentId id, Payer payer, Merchant merchant, Payments.Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
+    public static PaymentRoot Create(PaymentId id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
     {
         return new PaymentRoot(id, payer, merchant, value, timeStamp, correlationId);
     }
 
-    public Payments.Payment Value { get; init; }
+    public Payment Value { get; init; }
     public Payer Payer { get; init; }
     public Merchant Merchant { get; init; }
     public TransactionTimeStamp TimeStamp { get; init; }
@@ -47,6 +47,23 @@ public class PaymentRoot : AggregateRoot<PaymentId>
                 break;
             default: InvalidPaymentStatusException.Raise(); break;
         }
+    }
+
+    public override bool Equals(object? obj)
+    {
+        var payment = obj as PaymentRoot;
+
+        if (payment == null)
+        {
+            return false;
+        }
+
+        return Value == payment.Value && Payer == payment.Payer && Merchant == payment.Merchant && TimeStamp == payment.TimeStamp;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode() + Payer.GetHashCode() + Merchant.GetHashCode() + TimeStamp.GetHashCode();
     }
 }
 

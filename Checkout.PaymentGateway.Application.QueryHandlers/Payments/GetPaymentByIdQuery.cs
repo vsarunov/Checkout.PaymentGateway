@@ -1,11 +1,13 @@
 ﻿using Checkout.PaymentGateway.Common.Operations;
-using Checkout.PaymentGateway.Domain.Payments;
+using Checkout.PaymentGateway.CQRS.Models.Payments;
 using Checkout.PaymentGateway.Domain.Payments.Aggregates;
+using Checkout.PaymentGateway.Domain.Shared;
+using LanguageExt;
 using MediatR;
 
 namespace Checkout.PaymentGateway.Application.QueryHandlers.Payments;
 
-public class GetPaymentByIdQuery : IRequest<PaymentRoot>
+public class GetPaymentByIdQuery : IRequest<Either<PaymentRoot, Failure>>
 {
     private GetPaymentByIdQuery(Guid id, Guid correlationId)
     {

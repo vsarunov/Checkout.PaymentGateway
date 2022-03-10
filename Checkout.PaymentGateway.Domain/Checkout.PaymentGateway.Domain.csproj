@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Amido.Stacks.Core" Version="0.2.19" />
     <PackageReference Include="Amido.Stacks.Domain" Version="0.2.15" />
+    <PackageReference Include="LanguageExt.Core" Version="4.0.4" />
     <PackageReference Include="StronglyTypedId" Version="0.2.1" />
   </ItemGroup>
 

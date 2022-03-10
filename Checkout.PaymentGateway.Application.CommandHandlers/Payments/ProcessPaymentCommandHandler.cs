@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using Checkout.PaymentGateway.Domain.Shared;
+using LanguageExt;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Checkout.PaymentGateway.Application.CommandHandlers.Payments;
 
-public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand>
+public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand, Option<Failure>>
 {
     private readonly ILogger<ProcessPaymentCommandHandler> logger;
 
@@ -12,7 +14,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         logger = logger;
     }
 
-    public async Task<Unit> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
+    public Task<Option<Failure>> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
