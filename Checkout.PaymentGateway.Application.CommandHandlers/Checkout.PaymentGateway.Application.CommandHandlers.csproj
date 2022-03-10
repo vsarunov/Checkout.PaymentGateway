@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Checkout.PaymentGateway.Application.Integration\Checkout.PaymentGateway.Application.Integration.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.Common\Checkout.PaymentGateway.Common.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.CQRS\Checkout.PaymentGateway.CQRS.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.Domain\Checkout.PaymentGateway.Domain.csproj" />
