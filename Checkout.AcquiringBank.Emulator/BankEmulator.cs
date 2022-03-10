@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Checkout.AcquiringBank.Emulator.Models;
 using System.Text.Json;
+using System.Web.Http;
 
 namespace Checkout.AcquiringBank.Emulator
 {
@@ -18,9 +19,24 @@ namespace Checkout.AcquiringBank.Emulator
             ILogger log)
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var requestMoel = JsonSerializer.Deserialize<PaymentRoot>(requestBody);
-
-            return new OkResult();
+            var requestModel = JsonSerializer.Deserialize<PaymentRoot>(requestBody);
+            
+            if (requestModel.Payer.Name.FirstName == "Mike")
+            {
+                return new OkObjectResult(new PaymentProcessingResult("Rejected"));
+            }
+            
+            if (requestModel.Payer.Name.FirstName == "Olivia")
+            {
+                return new BadRequestObjectResult(new PaymentProcessingResult("Failed"));
+            }
+            
+            if (requestModel.Payer.Name.FirstName == "Francesca")
+            {
+                return new InternalServerErrorResult();
+            }
+            
+            return new OkObjectResult(new PaymentProcessingResult("Successful"));
         }
     }
 }
