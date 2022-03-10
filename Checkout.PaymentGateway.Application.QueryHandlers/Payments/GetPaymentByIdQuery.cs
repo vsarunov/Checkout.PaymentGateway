@@ -1,5 +1,5 @@
 ﻿using Checkout.PaymentGateway.Common.Operations;
-using Checkout.PaymentGateway.Domain.Payments;
+using Checkout.PaymentGateway.CQRS.Models.Payments;
 using Checkout.PaymentGateway.Domain.Payments.Aggregates;
 using MediatR;
 

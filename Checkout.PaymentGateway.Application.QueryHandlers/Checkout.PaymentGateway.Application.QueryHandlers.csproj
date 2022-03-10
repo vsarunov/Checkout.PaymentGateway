@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Checkout.PaymentGateway.CQRS\Checkout.PaymentGateway.CQRS.csproj" />
     <ProjectReference Include="..\Checkout.PaymentGateway.Domain\Checkout.PaymentGateway.Domain.csproj" />
   </ItemGroup>
 
