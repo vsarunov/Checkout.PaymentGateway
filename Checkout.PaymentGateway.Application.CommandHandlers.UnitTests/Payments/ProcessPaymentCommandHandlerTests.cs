@@ -19,18 +19,18 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
     {
         private readonly ProcessPaymentCommandHandler sut;
         private readonly MockLogger<ProcessPaymentCommandHandler> loggerMock;
-        private readonly IPaymentRepository paymentRepository;
+        private readonly IPaymentSearchService paymentSearchService;
         private readonly IBankService bankService;
 
         public ProcessPaymentCommandHandlerTests()
         {
-            paymentRepository = Substitute.For<IPaymentRepository>();
+            paymentSearchService = Substitute.For<IPaymentSearchService>();
             bankService = Substitute.For<IBankService>();
 
             loggerMock = Substitute.For<MockLogger<ProcessPaymentCommandHandler>>();
             loggerMock.IsEnabled(Arg.Any<LogLevel>()).ReturnsForAnyArgs(true);
 
-            sut = new ProcessPaymentCommandHandler(paymentRepository, bankService, loggerMock);
+            sut = new ProcessPaymentCommandHandler(paymentSearchService, bankService, loggerMock);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             PaymentRoot repositoryResponse = null;
 
-            paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
             var result = await sut.Handle(command, CancellationToken.None);
@@ -59,7 +59,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             PaymentRoot repositoryResponse = CreateDomainPayment();
 
-            paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
             var result = await sut.Handle(command, CancellationToken.None);
@@ -76,7 +76,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             PaymentRoot repositoryResponse = CreateDomainPayment();
 
-            paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
             await sut.Handle(command, CancellationToken.None);
@@ -93,7 +93,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             PaymentRoot repositoryResponse = null;
 
-            paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
             var result = await sut.Handle(command, CancellationToken.None);
@@ -110,7 +110,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             PaymentRoot repositoryResponse = null;
 
-            paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
             await sut.Handle(command, CancellationToken.None);

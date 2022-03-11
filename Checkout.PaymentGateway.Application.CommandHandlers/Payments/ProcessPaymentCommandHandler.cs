@@ -10,13 +10,13 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.Payments;
 public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand, Option<Failure>>
 {
     private readonly ILogger<ProcessPaymentCommandHandler> logger;
-    private readonly IPaymentRepository paymentRepository;
+    private readonly IPaymentSearchService paymentSearchService;
     private readonly IBankService bankService;
 
-    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository, IBankService bankService, ILogger<ProcessPaymentCommandHandler> logger)
+    public ProcessPaymentCommandHandler(IPaymentSearchService paymentSearchService, IBankService bankService, ILogger<ProcessPaymentCommandHandler> logger)
     {
         this.logger = logger;
-        this.paymentRepository = paymentRepository;
+        this.paymentSearchService = paymentSearchService;
         this.bankService = bankService;
     }
 

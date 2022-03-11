@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.PaymentGateway.App
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.PaymentGateway.Application.QueryHandlers.UnitTests", "Checkout.PaymentGateway.Application.QueryHandlers.UnitTests\Checkout.PaymentGateway.Application.QueryHandlers.UnitTests.csproj", "{691481BD-ABE1-47A9-8C70-633D194036E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.PaymentGateway.Infrastructure.UnitTests", "Checkout.PaymentGateway.Infrastructure.UnitTests\Checkout.PaymentGateway.Infrastructure.UnitTests.csproj", "{DFBD60A6-C658-4D18-B72B-58FC3448C747}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{691481BD-ABE1-47A9-8C70-633D194036E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{691481BD-ABE1-47A9-8C70-633D194036E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{691481BD-ABE1-47A9-8C70-633D194036E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFBD60A6-C658-4D18-B72B-58FC3448C747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFBD60A6-C658-4D18-B72B-58FC3448C747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFBD60A6-C658-4D18-B72B-58FC3448C747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFBD60A6-C658-4D18-B72B-58FC3448C747}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +148,7 @@ Global
 		{8EC83F8E-769C-4244-9ACF-4E9360827223} = {BBDDEF1E-94C9-4EDF-99A7-22B636E10D43}
 		{A080EF8F-7AAD-4C3F-B72B-46E5D9A2367F} = {08FE2EC2-7229-4BDA-9DD6-F3BBE5B06567}
 		{691481BD-ABE1-47A9-8C70-633D194036E0} = {08FE2EC2-7229-4BDA-9DD6-F3BBE5B06567}
+		{DFBD60A6-C658-4D18-B72B-58FC3448C747} = {08FE2EC2-7229-4BDA-9DD6-F3BBE5B06567}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {374AC2D0-DDA5-404D-B147-455915E38769}
