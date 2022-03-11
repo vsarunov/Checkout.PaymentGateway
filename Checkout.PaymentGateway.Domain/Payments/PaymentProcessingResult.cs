@@ -11,4 +11,7 @@ public record PaymentProcessingResult
     }
 
     public Status PaymentStatus { get; init; }
+
+    public bool IsRejected() => PaymentStatus == Status.Rejected;
+    public bool IsFailed() => PaymentStatus == Status.Failed;
 }

@@ -17,6 +17,9 @@ public static class EventIds
 
     // Error 6300-6399
     public static readonly EventId FailedBankPaymentProcessing = new EventId(6300, nameof(FailedBankPaymentProcessing));
+    public static readonly EventId PaymentAlreadyExists = new EventId(6301, nameof(PaymentAlreadyExists));
+    public static readonly EventId PaymentRejected = new EventId(6302, nameof(PaymentRejected));
+    public static readonly EventId PaymentFailed = new EventId(6303, nameof(PaymentFailed));
 
     // Critical 6400-6499
 }

@@ -41,5 +41,20 @@ internal static class Definitions
         EventIds.FailedBankPaymentProcessing,
         "Bank processing failed. HttpStatusCode: {HttpStatusCode}");
 
+    internal static readonly Action<ILogger, Guid, Exception> PaymentAlreadyExists = LoggerMessage.Define<Guid>(
+        LogLevel.Error,
+        EventIds.PaymentAlreadyExists,
+        "Payment Already Exists. PaymentId: {Id}");
+    
+    internal static readonly Action<ILogger, Guid, Exception> PaymentRejected = LoggerMessage.Define<Guid>(
+        LogLevel.Error,
+        EventIds.PaymentRejected,
+        "Payment Rejected. PaymentId: {Id}");
+    
+    internal static readonly Action<ILogger, Guid, Exception> PaymentFailed = LoggerMessage.Define<Guid>(
+        LogLevel.Error,
+        EventIds.PaymentFailed,
+        "PaymentFailed. PaymentId: {Id}");
+
     // Critical
 }
