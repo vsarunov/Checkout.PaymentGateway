@@ -10,15 +10,17 @@ public static class EventIds
     public static readonly EventId GettingPaymentByIdFromInMemoryRepository = new EventId(6002, nameof(GettingPaymentByIdFromInMemoryRepository));
     public static readonly EventId SavingPaymentByIdFromInMemoryRepository = new EventId(6003, nameof(SavingPaymentByIdFromInMemoryRepository));
     public static readonly EventId SearchingForPayment = new EventId(6004, nameof(SearchingForPayment));
+    public static readonly EventId UpdatingPaymentByIdFromInMemoryRepository = new EventId(6005, nameof(UpdatingPaymentByIdFromInMemoryRepository));
 
     // Information 6100-6199
     public static readonly EventId PaymentNotFound = new EventId(6100, nameof(PaymentNotFound));
 
     // Warning 6200-6299
-
+    public static readonly EventId ProcessingPaymentPreviouslyProcessedUnsuccessful = new EventId(6200, nameof(ProcessingPaymentPreviouslyProcessedUnsuccessful));
+    
     // Error 6300-6399
     public static readonly EventId FailedBankPaymentProcessing = new EventId(6300, nameof(FailedBankPaymentProcessing));
-    public static readonly EventId PaymentAlreadyExists = new EventId(6301, nameof(PaymentAlreadyExists));
+    public static readonly EventId PaymentHasBeenProcessed = new EventId(6301, nameof(PaymentHasBeenProcessed));
     public static readonly EventId PaymentRejected = new EventId(6302, nameof(PaymentRejected));
     public static readonly EventId PaymentFailed = new EventId(6303, nameof(PaymentFailed));
 

@@ -1,5 +1,6 @@
 ﻿using Checkout.PaymentGateway.Application.CommandHandlers.Payments;
 using Checkout.PaymentGateway.Application.Integration.Payments.Services;
+using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Checkout.PaymentGateway.Common.Enums;
 using Checkout.PaymentGateway.CQRS.Models.Payments;
 using Checkout.PaymentGateway.Domain.Payments.Aggregates;
@@ -22,17 +23,20 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
         private readonly ProcessPaymentCommandHandler sut;
         private readonly MockLogger<ProcessPaymentCommandHandler> loggerMock;
         private readonly IPaymentSearchService paymentSearchService;
+        private readonly IPaymentRepository paymentRepository;
         private readonly IBankService bankService;
 
         public ProcessPaymentCommandHandlerTests()
         {
             paymentSearchService = Substitute.For<IPaymentSearchService>();
+            paymentRepository = Substitute.For<IPaymentRepository>();
             bankService = Substitute.For<IBankService>();
 
             loggerMock = Substitute.For<MockLogger<ProcessPaymentCommandHandler>>();
             loggerMock.IsEnabled(Arg.Any<LogLevel>()).ReturnsForAnyArgs(true);
 
-            sut = new ProcessPaymentCommandHandler(paymentSearchService, bankService, loggerMock);
+            paymentRepository = Substitute.For<IPaymentRepository>();
+            sut = new ProcessPaymentCommandHandler(paymentSearchService, paymentRepository, bankService, loggerMock);
         }
 
         [Fact]
@@ -50,10 +54,28 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             var result = await sut.Handle(command, CancellationToken.None);
 
             result.ShouldBeNone();
+            bankService.ReceivedWithAnyArgs().ProcessPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]
-        public async Task Handle_GivenPaymentExists_ShouldReturnFailure()
+        public async Task Handle_GivenValidPayment_ShouldSavePayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            PaymentRoot repositoryResponse = null;
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenSuccessfulPaymentExists_ShouldReturnFailure()
         {
             var command = CreateCommand();
 
@@ -75,7 +97,21 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
         }
 
         [Fact]
-        public async Task Handle_GivenPaymentExists_ShouldLogAnError()
+        public async Task Handle_GivenSuccessfulPaymentExists_ShouldLogAnError()
+        {
+            var command = CreateCommand();
+
+            var repositoryResponse = CreateDomainPayment();
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+
+            await sut.Handle(command, CancellationToken.None);
+
+            loggerMock.Received().Log(LogLevel.Error, 6301, Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task Handle_GivenSuccessfulPaymentExists_ShouldNotProcessPayment()
         {
             var command = CreateCommand();
 
@@ -88,7 +124,144 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             await sut.Handle(command, CancellationToken.None);
 
-            loggerMock.Received().Log(LogLevel.Error, 6301, Arg.Any<string>());
+            bankService.DidNotReceiveWithAnyArgs().ProcessPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenSuccessfulPaymentExists_ShouldNotSavePayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            await sut.Handle(command, CancellationToken.None);
+
+            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenRejectedPaymentExistsReturnsSuccessfulOnReprocessing_ShouldProcessPayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Rejected);
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
+
+            bankService.ReceivedWithAnyArgs().ProcessPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenRejectedPaymentExistsReturnsSuccessfulOnReprocessing_ShouldLogAWarning()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Rejected);
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
+
+            loggerMock.Received().Log(LogLevel.Warning, 6200, Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task Handle_GivenRejectedPaymentExistsReturnsSuccessfulOnReprocessing_UpdatedPaymentInStore()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Rejected);
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
+
+            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenFailedPaymentExistsReturnsSuccessfulOnReprocessing_ShouldProcessPayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Failed);
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
+
+            bankService.ReceivedWithAnyArgs().ProcessPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenFailedPaymentExistsReturnsSuccessfulOnReprocessing_ShouldLogAWarning()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Failed);
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
+
+            loggerMock.Received().Log(LogLevel.Warning, 6200, Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task Handle_GivenFailedPaymentExistsReturnsSuccessfulOnReprocessing_UpdatedPaymentInStore()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
+
+            var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Failed);
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            var result = await sut.Handle(command, CancellationToken.None);
+
+            var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
+
+            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]
@@ -131,6 +304,40 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
         }
 
         [Fact]
+        public async Task Handle_GivenPaymentRejected_ShouldStorePayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Rejected);
+
+            PaymentRoot repositoryResponse = null;
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            await sut.Handle(command, CancellationToken.None);
+
+            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
+        public async Task Handle_GivenPaymentRejected_ShouldHaveProcessedPayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Rejected);
+
+            PaymentRoot repositoryResponse = null;
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            await sut.Handle(command, CancellationToken.None);
+
+            bankService.ReceivedWithAnyArgs().ProcessPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+        }
+
+        [Fact]
         public async Task Handle_GivenPaymentFailed_ShouldReturnFailure()
         {
             var command = CreateCommand();
@@ -167,6 +374,40 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             await sut.Handle(command, CancellationToken.None);
 
             loggerMock.Received().Log(LogLevel.Error, 6303, Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task Handle_GivenPaymentFailed_ShouldStorePayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Failed);
+
+            PaymentRoot repositoryResponse = null;
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            await sut.Handle(command, CancellationToken.None);
+
+            loggerMock.Received().Log(LogLevel.Error, 6303, Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task Handle_GivenPaymentFailed_ShouldHaveProcessedPayment()
+        {
+            var command = CreateCommand();
+
+            var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Failed);
+
+            PaymentRoot repositoryResponse = null;
+
+            paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
+            bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
+
+            await sut.Handle(command, CancellationToken.None);
+
+            bankService.ReceivedWithAnyArgs().ProcessPayment(Arg.Is<PaymentRoot>(x=>x.Id.Value== command.Id.Value));
         }
 
         private static ProcessPaymentCommand CreateCommand()

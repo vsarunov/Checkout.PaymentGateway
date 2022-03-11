@@ -6,5 +6,6 @@ namespace Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 public interface IPaymentRepository
 {
     Task<Option<Domain.Payments.Aggregates.PaymentRoot>> GetByIdAsync(PaymentId id);
-    Task SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment);
+    void SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment);
+    void UpdatePayment(Domain.Payments.Aggregates.PaymentRoot payment);
 }

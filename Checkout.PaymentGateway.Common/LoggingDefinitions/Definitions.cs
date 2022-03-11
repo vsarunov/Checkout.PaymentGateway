@@ -24,8 +24,13 @@ internal static class Definitions
     internal static readonly Action<ILogger, Exception> SavingPaymentByIdFromInMemoryRepository = LoggerMessage.Define(
         LogLevel.Debug,
         EventIds.SavingPaymentByIdFromInMemoryRepository,
-        "Saving Payment By Id From In Memory Repository");
-    
+        "Saving Payment.");
+
+    internal static readonly Action<ILogger, Exception> UpdatingPaymentByIdFromInMemoryRepository = LoggerMessage.Define(
+        LogLevel.Debug,
+        EventIds.UpdatingPaymentByIdFromInMemoryRepository,
+        "Updating Payment.");
+
     internal static readonly Action<ILogger, Exception> SearchingForPayment = LoggerMessage.Define(
         LogLevel.Debug,
         EventIds.SearchingForPayment,
@@ -33,12 +38,17 @@ internal static class Definitions
 
     // Information
 
-    internal static readonly Action<ILogger,Guid, Exception> PaymentNotFound = LoggerMessage.Define<Guid>(
+    internal static readonly Action<ILogger, Guid, Exception> PaymentNotFound = LoggerMessage.Define<Guid>(
         LogLevel.Information,
         EventIds.PaymentNotFound,
         "Payment Not Found. PaymentId: {Id}");
 
     // Warning
+
+    internal static readonly Action<ILogger, Guid, Exception> ProcessingPaymentPreviouslyProcessedUnsuccessful = LoggerMessage.Define<Guid>(
+    LogLevel.Warning,
+    EventIds.ProcessingPaymentPreviouslyProcessedUnsuccessful,
+    "Processing Payment Previously Processed Unsuccessful. PaymentId: {Id}");
 
     // Error
     internal static readonly Action<ILogger, int, Exception> FailedBankPaymentProcessing = LoggerMessage.Define<int>(
@@ -46,16 +56,16 @@ internal static class Definitions
         EventIds.FailedBankPaymentProcessing,
         "Bank processing failed. HttpStatusCode: {HttpStatusCode}");
 
-    internal static readonly Action<ILogger, Guid, Exception> PaymentAlreadyExists = LoggerMessage.Define<Guid>(
+    internal static readonly Action<ILogger, Guid, Exception> PaymentHasBeenProcessed = LoggerMessage.Define<Guid>(
         LogLevel.Error,
-        EventIds.PaymentAlreadyExists,
+        EventIds.PaymentHasBeenProcessed,
         "Payment Already Exists. PaymentId: {Id}");
-    
+
     internal static readonly Action<ILogger, Guid, Exception> PaymentRejected = LoggerMessage.Define<Guid>(
         LogLevel.Error,
         EventIds.PaymentRejected,
         "Payment Rejected. PaymentId: {Id}");
-    
+
     internal static readonly Action<ILogger, Guid, Exception> PaymentFailed = LoggerMessage.Define<Guid>(
         LogLevel.Error,
         EventIds.PaymentFailed,

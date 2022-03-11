@@ -49,6 +49,8 @@ public class PaymentRoot : AggregateRoot<PaymentId>
         }
     }
 
+    public bool IsProcessedPayment() => Status == Status.Successful;
+
     public override bool Equals(object obj)
     {
         var payment = obj as PaymentRoot;

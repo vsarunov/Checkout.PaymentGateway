@@ -18,6 +18,9 @@ public static class LoggingExtensions
     public static void SavingPaymentByIdFromInMemoryRepository(this ILogger logger) =>
         Definitions.SavingPaymentByIdFromInMemoryRepository(logger, null);
 
+    public static void UpdatingPaymentByIdFromInMemoryRepository(this ILogger logger) =>
+        Definitions.UpdatingPaymentByIdFromInMemoryRepository(logger, null);
+
     public static void SearchingForPayment(this ILogger logger) =>
         Definitions.SearchingForPayment(logger, null);
 
@@ -28,12 +31,15 @@ public static class LoggingExtensions
 
     // Warning
 
+    public static void ProcessingPaymentPreviouslyProcessedUnsuccessful(this ILogger logger, Guid id) =>
+    Definitions.ProcessingPaymentPreviouslyProcessedUnsuccessful(logger, id, null);
+
     // Error
     public static void FailedBankPaymentProcessing(this ILogger logger, int httpStatusCode) =>
         Definitions.FailedBankPaymentProcessing(logger, httpStatusCode, null);
 
-    public static void PaymentAlreadyExists(this ILogger logger, Guid id) =>
-        Definitions.PaymentAlreadyExists(logger, id, null);
+    public static void PaymentHasBeenProcessed(this ILogger logger, Guid id) =>
+        Definitions.PaymentHasBeenProcessed(logger, id, null);
 
     public static void PaymentRejected(this ILogger logger, Guid id) =>
         Definitions.PaymentRejected(logger, id, null);
