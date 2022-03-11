@@ -1,8 +1,3 @@
-﻿namespace Checkout.PaymentGateway.API.Models.Responses.Payments
-{
-    public class Failure
-    {
-        public string Id { get; init; }
-        public Error Error { get; init; }
-    }
-}
+﻿namespace Checkout.PaymentGateway.API.Models.Responses.Payments;
+
+public record struct Failure(string Id, Error Error);

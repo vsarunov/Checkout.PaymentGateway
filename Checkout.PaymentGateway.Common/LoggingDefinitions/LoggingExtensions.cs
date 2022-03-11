@@ -17,17 +17,29 @@ public static class LoggingExtensions
 
     public static void SavingPaymentByIdFromInMemoryRepository(this ILogger logger) =>
         Definitions.SavingPaymentByIdFromInMemoryRepository(logger, null);
-    
+
     public static void SearchingForPayment(this ILogger logger) =>
         Definitions.SearchingForPayment(logger, null);
 
     // Information
+
+    public static void PaymentNotFound(this ILogger logger, Guid id) =>
+        Definitions.PaymentNotFound(logger, id, null);
 
     // Warning
 
     // Error
     public static void FailedBankPaymentProcessing(this ILogger logger, int httpStatusCode) =>
         Definitions.FailedBankPaymentProcessing(logger, httpStatusCode, null);
+
+    public static void PaymentAlreadyExists(this ILogger logger, Guid id) =>
+        Definitions.PaymentAlreadyExists(logger, id, null);
+
+    public static void PaymentRejected(this ILogger logger, Guid id) =>
+        Definitions.PaymentRejected(logger, id, null);
+
+    public static void PaymentFailed(this ILogger logger, Guid id) =>
+        Definitions.PaymentFailed(logger, id, null);
 
     // Critical
 }

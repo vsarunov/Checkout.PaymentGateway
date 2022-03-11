@@ -1,4 +1,7 @@
 ﻿using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
+using Checkout.PaymentGateway.Common.Enums;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
+using Checkout.PaymentGateway.Domain.Payments;
 using Checkout.PaymentGateway.Domain.Payments.Aggregates;
 using Checkout.PaymentGateway.Domain.Shared;
 using LanguageExt;
@@ -7,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Checkout.PaymentGateway.Application.QueryHandlers.Payments;
 
-public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Option<PaymentRoot>>
+public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Either<PaymentRoot, Failure>>
 {
     private readonly ILogger<GetPaymentByIdQueryHandler> logger;
     private readonly IPaymentRepository paymentRepository;
@@ -18,8 +21,16 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, O
         this.paymentRepository = paymentRepository;
     }
 
-    public Task<Option<PaymentRoot>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Either<PaymentRoot, Failure>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var existingPayment = await paymentRepository.GetByIdAsync(new PaymentId(request.Id.Value));
+
+        return existingPayment.Match<Either<PaymentRoot, Failure>>(
+            x => x,
+            () =>
+            {
+                logger.PaymentNotFound(request.Id.Value);
+                return Failure.Of(request.Id.Value, ErrorCode.PaymentNotFound);
+            });
     }
 }

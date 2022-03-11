@@ -1,5 +1,7 @@
-﻿using Checkout.PaymentGateway.Application.Integration.Payments.Services;
-using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
+﻿using Checkout.PaymentGateway.Application.CommandHandlers.Payments.Mappers;
+using Checkout.PaymentGateway.Application.Integration.Payments.Services;
+using Checkout.PaymentGateway.Common.Enums;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using Checkout.PaymentGateway.Domain.Shared;
 using LanguageExt;
 using MediatR;
@@ -20,8 +22,35 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         this.bankService = bankService;
     }
 
-    public Task<Option<Failure>> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
+    public async Task<Option<Failure>> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var payment = request.ToDomainPayment();
+
+        var paymentSearchResult = paymentSearchService.SearchPayment(payment);
+
+        return await paymentSearchResult.MatchAsync(x =>
+        {
+            logger.PaymentAlreadyExists(payment.Id.Value);
+            return Failure.Of(payment.Id.Value, ErrorCode.PaymentAlreadyExists);
+        },
+        async () =>
+        {
+
+            var processPaymentResult = await bankService.ProcessPayment(payment);
+
+            if (processPaymentResult.IsRejected())
+            {
+                logger.PaymentRejected(payment.Id.Value);
+                return Failure.Of(payment.Id.Value, ErrorCode.PaymentRejected);
+            }
+
+            if (processPaymentResult.IsFailed())
+            {
+                logger.PaymentFailed(payment.Id.Value);
+                return Failure.Of(payment.Id.Value, ErrorCode.PaymentFailed);
+            }
+
+            return Option<Failure>.None;
+        });     
     }
 }

@@ -12,11 +12,15 @@ public static class EventIds
     public static readonly EventId SearchingForPayment = new EventId(6004, nameof(SearchingForPayment));
 
     // Information 6100-6199
+    public static readonly EventId PaymentNotFound = new EventId(6100, nameof(PaymentNotFound));
 
     // Warning 6200-6299
 
     // Error 6300-6399
     public static readonly EventId FailedBankPaymentProcessing = new EventId(6300, nameof(FailedBankPaymentProcessing));
+    public static readonly EventId PaymentAlreadyExists = new EventId(6301, nameof(PaymentAlreadyExists));
+    public static readonly EventId PaymentRejected = new EventId(6302, nameof(PaymentRejected));
+    public static readonly EventId PaymentFailed = new EventId(6303, nameof(PaymentFailed));
 
     // Critical 6400-6499
 }
