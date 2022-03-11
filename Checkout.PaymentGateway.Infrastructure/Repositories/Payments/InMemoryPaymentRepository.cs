@@ -1,6 +1,7 @@
 ﻿using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using Checkout.PaymentGateway.Domain.Payments;
+using LanguageExt;
 using Microsoft.Extensions.Logging;
 
 namespace Checkout.PaymentGateway.Infrastructure.Repositories.Payments;
@@ -18,7 +19,7 @@ public class InMemoryPaymentRepository : IPaymentRepository
         this.logger = logger;
     }
 
-    public async Task<Domain.Payments.Aggregates.PaymentRoot> GetByIdAsync(PaymentId id)
+    public async Task<Option<Domain.Payments.Aggregates.PaymentRoot>> GetByIdAsync(PaymentId id)
     {
         logger.GettingPaymentByIdFromInMemoryRepository();
 
@@ -28,12 +29,9 @@ public class InMemoryPaymentRepository : IPaymentRepository
             return await Task.FromResult((Domain.Payments.Aggregates.PaymentRoot) null);
     }
 
-    public async Task<bool> SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment)
+    public async Task SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment)
     {
         logger.SavingPaymentByIdFromInMemoryRepository();
-
-        if (payment == null)
-            return await Task.FromResult(false);
 
         lock (@lock)
         {
@@ -42,7 +40,5 @@ public class InMemoryPaymentRepository : IPaymentRepository
             else
                 storage.Add(payment.Id.Value, payment);
         }
-
-        return await Task.FromResult(true);
     }
 }

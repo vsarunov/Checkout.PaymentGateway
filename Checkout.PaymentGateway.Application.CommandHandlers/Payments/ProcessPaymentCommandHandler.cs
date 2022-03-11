@@ -28,26 +28,29 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
 
         var paymentSearchResult = paymentSearchService.SearchPayment(payment);
 
-        if (paymentSearchResult != null)
+        return await paymentSearchResult.MatchAsync(x =>
         {
             logger.PaymentAlreadyExists(payment.Id.Value);
             return Failure.Of(payment.Id.Value, ErrorCode.PaymentAlreadyExists);
-        }
-
-        var processPaymentResult = await bankService.ProcessPayment(payment);
-
-        if (processPaymentResult.IsRejected())
+        },
+        async () =>
         {
-            logger.PaymentRejected(payment.Id.Value);
-            return Failure.Of(payment.Id.Value, ErrorCode.PaymentRejected);
-        }
 
-        if (processPaymentResult.IsFailed())
-        {
-            logger.PaymentFailed(payment.Id.Value);
-            return Failure.Of(payment.Id.Value, ErrorCode.PaymentFailed);
-        }
+            var processPaymentResult = await bankService.ProcessPayment(payment);
 
-        return Option<Failure>.None;
+            if (processPaymentResult.IsRejected())
+            {
+                logger.PaymentRejected(payment.Id.Value);
+                return Failure.Of(payment.Id.Value, ErrorCode.PaymentRejected);
+            }
+
+            if (processPaymentResult.IsFailed())
+            {
+                logger.PaymentFailed(payment.Id.Value);
+                return Failure.Of(payment.Id.Value, ErrorCode.PaymentFailed);
+            }
+
+            return Option<Failure>.None;
+        });     
     }
 }

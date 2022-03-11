@@ -1,6 +1,8 @@
 ﻿using Checkout.PaymentGateway.Application.Integration.Repositories.Payments;
 using Checkout.PaymentGateway.Application.QueryHandlers.Payments;
+using Checkout.PaymentGateway.Common.Enums;
 using Checkout.PaymentGateway.Domain.Payments.Aggregates;
+using Checkout.PaymentGateway.Domain.Shared;
 using Checkout.PaymentGateway.Tests.Shared.Mocks;
 using FluentAssertions;
 using LanguageExt.UnitTesting;
@@ -17,17 +19,17 @@ namespace Checkout.PaymentGateway.Application.QueryHandlers.UnitTests.Payments
     public class GetPaymentByIdQueryHandlerTests
     {
         private readonly GetPaymentByIdQueryHandler sut;
-        private readonly MockLogger<GetPaymentByIdQueryHandler> mockLogger;
+        private readonly MockLogger<GetPaymentByIdQueryHandler> loggerMock;
         private readonly IPaymentRepository paymentRepository;
 
         public GetPaymentByIdQueryHandlerTests()
         {
             paymentRepository = Substitute.For<IPaymentRepository>();
 
-            mockLogger = Substitute.For<MockLogger<GetPaymentByIdQueryHandler>>();
-            mockLogger.IsEnabled(Arg.Any<LogLevel>()).ReturnsForAnyArgs(true);
+            loggerMock = Substitute.For<MockLogger<GetPaymentByIdQueryHandler>>();
+            loggerMock.IsEnabled(Arg.Any<LogLevel>()).ReturnsForAnyArgs(true);
 
-            sut = new GetPaymentByIdQueryHandler(paymentRepository, mockLogger);
+            sut = new GetPaymentByIdQueryHandler(paymentRepository, loggerMock);
         }
 
         [Fact]
@@ -41,7 +43,7 @@ namespace Checkout.PaymentGateway.Application.QueryHandlers.UnitTests.Payments
 
             var result = await sut.Handle(query, CancellationToken.None);
 
-            result.ShouldBeSome(x =>
+            result.ShouldBeLeft(x =>
             {
                 x.Should().BeEquivalentTo(repositoryResponse);
             });
@@ -52,13 +54,32 @@ namespace Checkout.PaymentGateway.Application.QueryHandlers.UnitTests.Payments
         {
             var query = CreateQuery();
 
-            PaymentRoot repositoryResponse = CreateDomainPayment();
+            PaymentRoot repositoryResponse = null;
 
             paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
 
             var result = await sut.Handle(query, CancellationToken.None);
 
-            result.ShouldBeNone();
+            var failure = Failure.Of(query.Id.Value, ErrorCode.PaymentNotFound);
+
+            result.ShouldBeRight(x =>
+            {
+                x.Should().BeEquivalentTo(failure);
+            });
+        }
+
+        [Fact]
+        public async Task Handle_GivenPaymentDoesNotExists_ShouldLogInformation()
+        {
+            var query = CreateQuery();
+
+            PaymentRoot repositoryResponse = null;
+
+            paymentRepository.GetByIdAsync(Arg.Any<Domain.Payments.PaymentId>()).Returns(repositoryResponse);
+
+            var result = await sut.Handle(query, CancellationToken.None);
+
+            loggerMock.Received().Log(LogLevel.Information, 6100, Arg.Any<string>());
         }
 
         private static GetPaymentByIdQuery CreateQuery() =>

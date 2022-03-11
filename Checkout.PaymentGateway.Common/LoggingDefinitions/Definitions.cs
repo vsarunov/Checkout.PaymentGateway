@@ -33,6 +33,11 @@ internal static class Definitions
 
     // Information
 
+    internal static readonly Action<ILogger,Guid, Exception> PaymentNotFound = LoggerMessage.Define<Guid>(
+        LogLevel.Information,
+        EventIds.PaymentNotFound,
+        "Payment Not Found. PaymentId: {Id}");
+
     // Warning
 
     // Error

@@ -3,7 +3,8 @@
     public enum ErrorCode
     {
         PaymentRejected = 0,
-        PaymentAlreadyExists =1,
+        PaymentAlreadyExists = 1,
         PaymentFailed = 2,
+        PaymentNotFound = 3
     }
 }

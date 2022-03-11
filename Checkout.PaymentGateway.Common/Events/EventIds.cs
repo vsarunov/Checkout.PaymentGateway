@@ -12,6 +12,7 @@ public static class EventIds
     public static readonly EventId SearchingForPayment = new EventId(6004, nameof(SearchingForPayment));
 
     // Information 6100-6199
+    public static readonly EventId PaymentNotFound = new EventId(6100, nameof(PaymentNotFound));
 
     // Warning 6200-6299
 
