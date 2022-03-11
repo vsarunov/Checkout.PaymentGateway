@@ -33,6 +33,11 @@ internal static class Definitions
 
     // Information
 
+    internal static readonly Action<ILogger,Guid, Exception> PaymentNotFound = LoggerMessage.Define<Guid>(
+        LogLevel.Information,
+        EventIds.PaymentNotFound,
+        "Payment Not Found. PaymentId: {Id}");
+
     // Warning
 
     // Error
@@ -40,6 +45,21 @@ internal static class Definitions
         LogLevel.Error,
         EventIds.FailedBankPaymentProcessing,
         "Bank processing failed. HttpStatusCode: {HttpStatusCode}");
+
+    internal static readonly Action<ILogger, Guid, Exception> PaymentAlreadyExists = LoggerMessage.Define<Guid>(
+        LogLevel.Error,
+        EventIds.PaymentAlreadyExists,
+        "Payment Already Exists. PaymentId: {Id}");
+    
+    internal static readonly Action<ILogger, Guid, Exception> PaymentRejected = LoggerMessage.Define<Guid>(
+        LogLevel.Error,
+        EventIds.PaymentRejected,
+        "Payment Rejected. PaymentId: {Id}");
+    
+    internal static readonly Action<ILogger, Guid, Exception> PaymentFailed = LoggerMessage.Define<Guid>(
+        LogLevel.Error,
+        EventIds.PaymentFailed,
+        "PaymentFailed. PaymentId: {Id}");
 
     // Critical
 }
