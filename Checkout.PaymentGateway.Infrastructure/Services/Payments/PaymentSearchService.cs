@@ -1,5 +1,7 @@
 using Checkout.PaymentGateway.Application.Integration.Payments.Services;
+using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using Checkout.PaymentGateway.Domain.Payments.Aggregates;
+using LanguageExt;
 using Microsoft.Extensions.Logging;
 
 namespace Checkout.PaymentGateway.Infrastructure.Services.Payments;
@@ -15,10 +17,12 @@ public class PaymentSearchService : IPaymentSearchService
         this.storage = storage;
     }
 
-    public Task<PaymentRoot> SearchPayment(PaymentRoot payment)
+    public Option<PaymentRoot> SearchPayment(PaymentRoot payment)
     {
-        
-        
-        throw new NotImplementedException();
+        logger.SearchingForPayment();
+
+        var paymentRoot = storage.FirstOrDefault(x => x.Value.Equals(payment));
+
+        return paymentRoot.Value;
     }
 }
