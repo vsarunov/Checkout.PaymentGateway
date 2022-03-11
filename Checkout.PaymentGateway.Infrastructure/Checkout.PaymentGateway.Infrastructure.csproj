@@ -9,4 +9,8 @@
     <ProjectReference Include="..\Checkout.PaymentGateway.Application.Integration\Checkout.PaymentGateway.Application.Integration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LanguageExt.Core" Version="4.0.4" />
+  </ItemGroup>
+
 </Project>

@@ -8,12 +8,13 @@ namespace Checkout.PaymentGateway.Infrastructure.Repositories.Payments;
 public class InMemoryPaymentRepository : IPaymentRepository
 {
     private static readonly Object @lock = new Object();
-    private static readonly Dictionary<Guid, Domain.Payments.Aggregates.PaymentRoot> storage = new Dictionary<Guid, Domain.Payments.Aggregates.PaymentRoot>();
-
+    private readonly Dictionary<Guid, Domain.Payments.Aggregates.PaymentRoot> storage;
     private readonly ILogger<InMemoryPaymentRepository> logger;
 
-    public InMemoryPaymentRepository(ILogger<InMemoryPaymentRepository> logger)
+    public InMemoryPaymentRepository(Dictionary<Guid, Domain.Payments.Aggregates.PaymentRoot> storage,
+        ILogger<InMemoryPaymentRepository> logger)
     {
+        this.storage = storage;
         this.logger = logger;
     }
 
@@ -24,7 +25,7 @@ public class InMemoryPaymentRepository : IPaymentRepository
         if (storage.ContainsKey(id.Value))
             return await Task.FromResult(storage[id.Value]);
         else
-            return await Task.FromResult((Domain.Payments.Aggregates.PaymentRoot)null);
+            return await Task.FromResult((Domain.Payments.Aggregates.PaymentRoot) null);
     }
 
     public async Task<bool> SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment)
