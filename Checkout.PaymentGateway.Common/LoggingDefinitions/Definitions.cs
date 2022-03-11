@@ -25,6 +25,11 @@ internal static class Definitions
         LogLevel.Debug,
         EventIds.SavingPaymentByIdFromInMemoryRepository,
         "Saving Payment By Id From In Memory Repository");
+    
+    internal static readonly Action<ILogger, Exception> SearchingForPayment = LoggerMessage.Define(
+        LogLevel.Debug,
+        EventIds.SearchingForPayment,
+        "Searching for payment");
 
     // Information
 

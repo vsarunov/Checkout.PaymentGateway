@@ -17,6 +17,9 @@ public static class LoggingExtensions
 
     public static void SavingPaymentByIdFromInMemoryRepository(this ILogger logger) =>
         Definitions.SavingPaymentByIdFromInMemoryRepository(logger, null);
+    
+    public static void SearchingForPayment(this ILogger logger) =>
+        Definitions.SearchingForPayment(logger, null);
 
     // Information
 
