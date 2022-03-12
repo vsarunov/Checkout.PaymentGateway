@@ -31,11 +31,9 @@ public class ProcessPaymentEndpoint : Endpoint<ProcessPaymentRequest>
 
         var paymentProcessingResult = await mediator.Send(command);
 
-        await paymentProcessingResult.MatchAsync(async failure =>
-        {
-            await SendAsync(failure.ToResponseFailure(), failure.ErrorCode.ToStatusCode());
-        },
-        async () => await SendAsync(StatusCodes.Status200OK));
+        await paymentProcessingResult.Match(
+            failure =>SendAsync(failure.ToResponseFailure(), failure.ErrorCode.ToStatusCode()),
+            () => SendAsync(StatusCodes.Status200OK));
     }
 }
 

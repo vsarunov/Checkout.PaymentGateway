@@ -11,8 +11,8 @@ namespace Checkout.PaymentGateway.API.Features.Payments.Mappings
             GetPaymentByIdQuery.Create(new CQRS.Models.Payments.PaymentId(request.Id.Value), request.CorrelationId);
     }
 
-    internal static PaymentResponse ToResponse(this PaymentRoot payment)
-    {
+    //internal static PaymentResponse ToResponse(this PaymentRoot payment)
+    //{
 
-    }
+    //}
 }

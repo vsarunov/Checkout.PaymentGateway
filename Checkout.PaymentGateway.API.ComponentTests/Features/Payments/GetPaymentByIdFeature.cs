@@ -16,6 +16,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Features.Payments
             "When I try to get payment by id".x(() => fixture.WhenIGetExistingPaymentById());
             "Then a successful response is returned".x(fixture.ThenASuccessfulResponseIsReturned);
             "And the payment details match expected".x(fixture.ThenPaymentIsAsExpected);
+            "And the payment was read from the database".x(fixture.ThenPaymentRepositoryWasCalled);
         }
 
         [Scenario, CustomAutoData]
@@ -24,6 +25,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Features.Payments
             "Given a valid non existing payment".x(() => fixture.GivenAValidPayment(request));
             "When I try to get payment by id".x(() => fixture.WhenIGetExistingPaymentById());
             "Then a bad request response is returned".x(fixture.ThenASuccessfulResponseIsReturned);
+            "And the payment was read from the database".x(fixture.ThenPaymentRepositoryWasCalled);
         }
     }
 }

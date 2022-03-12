@@ -43,36 +43,34 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             logger.ProcessingPaymentPreviouslyProcessedUnsuccessful(payment.Id.Value);
             return await ProcessPayment(payment);
         },
-        async () =>
-        {
-
-            var processPaymentResult = await bankService.ProcessPayment(payment);
-
-            if (processPaymentResult.IsRejected())
-            {
-                logger.PaymentRejected(payment.Id.Value);
-                return CreateFailure(payment.Id.Value, ErrorCode.PaymentRejected);
-            }
-
-            if (processPaymentResult.IsFailed())
-            {
-                logger.PaymentFailed(payment.Id.Value);
-                return CreateFailure(payment.Id.Value, ErrorCode.PaymentFailed);
-            }
-
-
-
-            return Option<Failure>.None;
-        });
+        async () => await ProcessPayment(payment));
     }
 
     private async Task<Option<Failure>> ProcessPayment(PaymentRoot payment)
     {
+        var processPaymentResult = await bankService.ProcessPayment(payment);
 
+        Failure failure = null;
+
+        if (processPaymentResult.IsRejected())
+        {
+            logger.PaymentRejected(payment.Id.Value);
+            failure = CreateFailure(payment.Id.Value, ErrorCode.PaymentRejected);
+        }
+
+        if (processPaymentResult.IsFailed())
+        {
+            logger.PaymentFailed(payment.Id.Value);
+            failure = CreateFailure(payment.Id.Value, ErrorCode.PaymentFailed);
+        }
+
+        payment.UpdateStatus(processPaymentResult.PaymentStatus);
+
+        UpsertPayment(payment);
+
+        return failure;
     }
 
-    private void SavePayment(PaymentRoot payment) => paymentRepository.SaveAsync(payment);
-    private void UpdatePayment(PaymentRoot payment) => paymentRepository.UpdatePayment(payment);
-
+    private void UpsertPayment(PaymentRoot payment) => paymentRepository.UpsertPayment(payment);
     private static Failure CreateFailure(Guid id, ErrorCode errorCode) => Failure.Of(id, errorCode);
 }

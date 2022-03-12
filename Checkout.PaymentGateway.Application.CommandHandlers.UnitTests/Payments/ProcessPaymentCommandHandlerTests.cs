@@ -71,7 +71,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             var result = await sut.Handle(command, CancellationToken.None);
 
-            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+            paymentRepository.ReceivedWithAnyArgs().UpsertPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]
@@ -82,6 +82,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
 
             var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Successful);
 
             paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
@@ -102,6 +103,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             var command = CreateCommand();
 
             var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Successful);
 
             paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
 
@@ -118,6 +120,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
 
             var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Successful);
 
             paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
@@ -135,13 +138,14 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
             var bankProcessingResult = new Domain.Payments.PaymentProcessingResult(Domain.Payments.Status.Successful);
 
             var repositoryResponse = CreateDomainPayment();
+            repositoryResponse.UpdateStatus(Domain.Payments.Status.Successful);
 
             paymentSearchService.SearchPayment(Arg.Any<PaymentRoot>()).Returns(repositoryResponse);
             bankService.ProcessPayment(Arg.Any<PaymentRoot>()).Returns(bankProcessingResult);
 
             await sut.Handle(command, CancellationToken.None);
 
-            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+            paymentRepository.DidNotReceiveWithAnyArgs().UpsertPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]
@@ -201,7 +205,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
 
-            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+            paymentRepository.Received().UpsertPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]
@@ -261,7 +265,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             var failure = Failure.Of(command.Id.Value, ErrorCode.PaymentAlreadyExists);
 
-            paymentRepository.DidNotReceiveWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+            paymentRepository.Received().UpsertPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]
@@ -317,7 +321,7 @@ namespace Checkout.PaymentGateway.Application.CommandHandlers.UnitTests.Payments
 
             await sut.Handle(command, CancellationToken.None);
 
-            paymentRepository.ReceivedWithAnyArgs().SaveAsync(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
+            paymentRepository.ReceivedWithAnyArgs().UpsertPayment(Arg.Is<PaymentRoot>(x => x.Id.Value == command.Id.Value));
         }
 
         [Fact]

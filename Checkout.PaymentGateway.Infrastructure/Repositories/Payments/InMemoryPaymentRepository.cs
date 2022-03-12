@@ -29,22 +29,9 @@ public class InMemoryPaymentRepository : IPaymentRepository
             return await Task.FromResult((Domain.Payments.Aggregates.PaymentRoot) null);
     }
 
-    public void SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment)
+    public void UpsertPayment(Domain.Payments.Aggregates.PaymentRoot payment)
     {
         logger.SavingPaymentByIdFromInMemoryRepository();
-
-        lock (@lock)
-        {
-            if (storage.ContainsKey(payment.Id.Value))
-                storage[payment.Id.Value] = payment;
-            else
-                storage.Add(payment.Id.Value, payment);
-        }
-    }
-
-    public void UpdatePayment(Domain.Payments.Aggregates.PaymentRoot payment)
-    {
-        logger.UpdatingPaymentByIdFromInMemoryRepository();
 
         lock (@lock)
         {
