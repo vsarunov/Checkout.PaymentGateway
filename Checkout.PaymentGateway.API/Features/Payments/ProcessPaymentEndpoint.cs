@@ -9,13 +9,13 @@ public class ProcessPaymentEndpoint : Endpoint<ProcessPaymentRequest>
 {
     private readonly ILogger<ProcessPaymentEndpoint> logger;
     private readonly IMediator mediator;
-    
-    public ProcessPaymentEndpoint(IMediator mediator,ILogger<ProcessPaymentEndpoint> logger)
+
+    public ProcessPaymentEndpoint(IMediator mediator, ILogger<ProcessPaymentEndpoint> logger)
     {
         this.logger = logger;
         this.mediator = mediator;
     }
-    
+
     public override void Configure()
     {
         Verbs(Http.POST);
@@ -31,7 +31,9 @@ public class ProcessPaymentEndpoint : Endpoint<ProcessPaymentRequest>
 
         var paymentProcessingResult = await mediator.Send(command);
 
-        await SendAsync(StatusCodes.Status200OK);
+        await paymentProcessingResult.Match(
+            failure =>SendAsync(failure.ToResponseFailure(), failure.ErrorCode.ToStatusCode()),
+            () => SendAsync(StatusCodes.Status200OK));
     }
 }
 

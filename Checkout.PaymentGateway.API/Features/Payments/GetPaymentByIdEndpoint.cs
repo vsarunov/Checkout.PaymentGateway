@@ -1,12 +1,11 @@
 ﻿using Checkout.PaymentGateway.API.Features.Payments.Mappings;
 using Checkout.PaymentGateway.API.Models.Requests.Payments;
-using Checkout.PaymentGateway.API.Models.Responses.Payments;
 using Checkout.PaymentGateway.Common.LoggingDefinitions;
 using MediatR;
 
 namespace Checkout.PaymentGateway.API.Features.Payments;
 
-public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest, PaymentResponse>
+public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest>
 {
     private readonly ILogger<GetPaymentByIdEndpoint> logger;
     private readonly IMediator mediator;
@@ -32,7 +31,9 @@ public class GetPaymentByIdEndpoint : Endpoint<GetPaymentRequest, PaymentRespons
 
         var payment = await mediator.Send(query);
 
-        await SendAsync(new PaymentResponse(), StatusCodes.Status200OK);
+        await payment.Match(
+            f => SendAsync(f.ToResponseFailure(), f.ErrorCode.ToStatusCode()),
+            p => SendAsync(p.ToResponse(), StatusCodes.Status200OK));
     }
 }
 

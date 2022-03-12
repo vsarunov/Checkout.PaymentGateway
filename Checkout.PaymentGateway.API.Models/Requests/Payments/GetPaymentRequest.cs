@@ -6,7 +6,7 @@ namespace Checkout.PaymentGateway.API.Models.Requests.Payments;
 
 public record GetPaymentRequest
 {
-    public PaymentId Id { get; init; }
+    public Guid Id { get; init; }
 
     [FromHeader(Headers.DefaultCorrelationIdHeaderName)] 
     public Guid CorrelationId { get; init; }

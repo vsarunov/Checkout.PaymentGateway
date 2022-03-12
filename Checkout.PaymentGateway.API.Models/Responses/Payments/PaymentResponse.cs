@@ -1,4 +1,6 @@
-﻿namespace Checkout.PaymentGateway.API.Models.Responses.Payments;
+﻿using Checkout.PaymentGateway.API.Models.Shared.Payments;
 
-public record struct PaymentResponse();
+namespace Checkout.PaymentGateway.API.Models.Responses.Payments;
+
+public record PaymentResponse(CardDto Card, PaymentDto Payment, PaymentStatusDto PaymentStatus);
 

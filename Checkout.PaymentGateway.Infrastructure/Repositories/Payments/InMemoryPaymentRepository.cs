@@ -29,7 +29,7 @@ public class InMemoryPaymentRepository : IPaymentRepository
             return await Task.FromResult((Domain.Payments.Aggregates.PaymentRoot) null);
     }
 
-    public async Task SaveAsync(Domain.Payments.Aggregates.PaymentRoot payment)
+    public void UpsertPayment(Domain.Payments.Aggregates.PaymentRoot payment)
     {
         logger.SavingPaymentByIdFromInMemoryRepository();
 
