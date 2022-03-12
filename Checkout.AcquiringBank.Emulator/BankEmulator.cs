@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Checkout.AcquiringBank.Emulator.Models;
 using System.Text.Json;
-using System.Web.Http;
 
 namespace Checkout.AcquiringBank.Emulator
 {
@@ -29,11 +28,6 @@ namespace Checkout.AcquiringBank.Emulator
             if (requestModel.Payer.Name.FirstName == "Olivia")
             {
                 return new BadRequestObjectResult(new PaymentProcessingResult("Failed"));
-            }
-            
-            if (requestModel.Payer.Name.FirstName == "Francesca")
-            {
-                return new InternalServerErrorResult();
             }
             
             return new OkObjectResult(new PaymentProcessingResult("Successful"));

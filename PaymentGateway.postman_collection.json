@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "d6b33220-7a18-4f2f-a7ef-4ced883503d1",
+		"name": "PaymentGateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Process payment request - Successful",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"Id\":\"dc757c6e-d5e6-4fa3-b8bf-be3a6cd31c52\",\"Payer\":{\"Address\":{\"AddressLine\":\"19 Barn lea\",\"PostCode\":\"SJ178SE\"},\"Name\":{\"FirstName\":\"Tom\",\"LastName\":\"Riddle\",\"MiddleName\":null},\"Card\":{\"Number\":\"378282246310005\",\"CVV\":451,\"Expiration\":{\"Year\":2022,\"Month\":6}}},\"Value\":{\"Amount\":6500.00,\"ISOCurrencyCode\":\"USD\"},\"Merchant\":{\"Id\":\"4c14eb86-a63c-4f89-8fcb-dc361045764f\",\"Card\":{\"Number\":\"378282246310005\",\"CVV\":632,\"Expiration\":{\"Year\":2022,\"Month\":8}}},\"TransactionTimeStamp\":{\"TimeStamp\":\"2022-03-12T11:35:27.5366111Z\"}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44390/v1/payments",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44390",
+					"path": [
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Process payment request - Rejected",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"Id\":\"dc757c6e-d5e6-4fa3-b8bf-be3a6cd31c52\",\"Payer\":{\"Address\":{\"AddressLine\":\"19 Barn lea\",\"PostCode\":\"SJ178SE\"},\"Name\":{\"FirstName\":\"Mike\",\"LastName\":\"Riddle\",\"MiddleName\":null},\"Card\":{\"Number\":\"378282246310005\",\"CVV\":451,\"Expiration\":{\"Year\":2022,\"Month\":6}}},\"Value\":{\"Amount\":6500.00,\"ISOCurrencyCode\":\"USD\"},\"Merchant\":{\"Id\":\"4c14eb86-a63c-4f89-8fcb-dc361045764f\",\"Card\":{\"Number\":\"378282246310005\",\"CVV\":632,\"Expiration\":{\"Year\":2022,\"Month\":8}}},\"TransactionTimeStamp\":{\"TimeStamp\":\"2022-03-12T11:35:27.5366111Z\"}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44390/v1/payments",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44390",
+					"path": [
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Process payment request - Failed",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"Id\":\"dc757c6e-d5e6-4fa3-b8bf-be3a6cd31c52\",\"Payer\":{\"Address\":{\"AddressLine\":\"19 Barn lea\",\"PostCode\":\"SJ178SE\"},\"Name\":{\"FirstName\":\"Olivia\",\"LastName\":\"Riddle\",\"MiddleName\":null},\"Card\":{\"Number\":\"378282246310005\",\"CVV\":451,\"Expiration\":{\"Year\":2022,\"Month\":6}}},\"Value\":{\"Amount\":6500.00,\"ISOCurrencyCode\":\"USD\"},\"Merchant\":{\"Id\":\"4c14eb86-a63c-4f89-8fcb-dc361045764f\",\"Card\":{\"Number\":\"378282246310005\",\"CVV\":632,\"Expiration\":{\"Year\":2022,\"Month\":8}}},\"TransactionTimeStamp\":{\"TimeStamp\":\"2022-03-12T11:35:27.5366111Z\"}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44390/v1/payments",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44390",
+					"path": [
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
