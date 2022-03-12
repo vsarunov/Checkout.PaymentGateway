@@ -12,6 +12,6 @@ public class ProcessPaymentRequest
     public MerchantDto Merchant { get; init; }
     public TransactionTimeStampDto TransactionTimeStamp { get; init; }
 
-    //[FromHeader(Headers.DefaultCorrelationIdHeaderName)]
-    //public Guid CorrelationId { get; init; }
+    [FromHeader(Headers.DefaultCorrelationIdHeaderName)]
+    public Guid CorrelationId { get; init; }
 }
