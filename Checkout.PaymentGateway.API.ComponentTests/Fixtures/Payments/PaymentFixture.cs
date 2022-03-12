@@ -56,12 +56,6 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
             paymentRequest = request;
         }
 
-        internal async Task GivenPaymentExists(ProcessPaymentRequest request)
-        {
-            paymentRequest = request;
-            await CreatePaymentAsync(paymentRequest);
-        }
-
         internal void GivenBankRejectsTransactions()
         {
             var paymentProcessingResult = new PaymentProcessingResult(Status.Rejected);
@@ -93,17 +87,20 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
             mockBankServiceHttpMessageHandler.SendAsync(Arg.Is<HttpRequestMessage>(x => x.Method == HttpMethod.Post && x.RequestUri.ToString().EndsWith($"/v1/process-payment"))).Returns(httpResponseMessage);
         }
 
-        internal void GivenStorageFailure()
-        {
-            paymentRepository.WhenForAnyArgs(x => x.UpsertPayment(Arg.Any<Domain.Payments.Aggregates.PaymentRoot>())).Do(x => throw new Exception());
-        }
-
         internal void GivenPaymentAlreadyExists(ProcessPaymentRequest request, Status status)
         {
             paymentRequest = request;
             var domainPayment = paymentRequest.MapRequestToDomain();
             domainPayment.UpdateStatus(status);
             paymentSearchService.SearchPayment(domainPayment).Returns(domainPayment);
+        }
+
+        internal void GivenPaymentExists(ProcessPaymentRequest request, Status status)
+        {
+            paymentRequest = request;
+            var domainPayment = paymentRequest.MapRequestToDomain();
+            domainPayment.UpdateStatus(status);
+            paymentRepository.GetByIdAsync(Arg.Is<Domain.Payments.PaymentId>(x => x.Value == paymentRequest.Id.Value)).Returns(domainPayment);
         }
 
         internal async Task WhenISubmitThePayment()
@@ -140,9 +137,19 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures.Payments
             paymentRepository.Received().GetByIdAsync(Arg.Is<Domain.Payments.PaymentId>(x => x.Value == paymentRequest.Id.Value));
         }
 
-        internal void ThenPaymentIsAsExpected()
+        internal async Task ThenPaymentIsAsExpected(Status status)
         {
-            // check expected payment
+            var result = await GetResponseJsonString();
+            var payment = JsonConvert.DeserializeObject<PaymentResponse>(result);
+
+            payment.PaymentStatus.Status.ShouldBe(status.ToString());
+            payment.Card.Number.ShouldBe(new string(paymentRequest.Payer.Card.Number.Select((p, index) => index <= 12 ? '*' : p).ToArray()));
+            payment.Card.CVV.ShouldBe(paymentRequest.Payer.Card.CVV);
+            payment.Card.Expiration.Year.ShouldBe(paymentRequest.Payer.Card.Expiration.Year);
+            payment.Card.Expiration.Month.ShouldBe(paymentRequest.Payer.Card.Expiration.Month);
+            payment.Payment.Amount.ShouldBe(paymentRequest.Value.Amount);
+            payment.Payment.ISOCurrencyCode.ShouldBe(paymentRequest.Value.ISOCurrencyCode);
+
         }
 
         internal void ThenPaymentIsStored()

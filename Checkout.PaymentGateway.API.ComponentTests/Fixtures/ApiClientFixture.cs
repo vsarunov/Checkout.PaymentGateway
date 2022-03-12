@@ -23,7 +23,7 @@ namespace Checkout.PaymentGateway.API.ComponentTests.Fixtures
 
         public async Task<HttpResponseMessage> GetPaymentByIdAsync(PaymentId paymentId)
         {
-            return await SendAsync(HttpMethod.Post, $"/v1/payments/{paymentId}");
+            return await SendAsync(HttpMethod.Get, $"/v1/payments/{paymentId}");
         }
 
         internal void ThenASuccessfulResponseIsReturned()
