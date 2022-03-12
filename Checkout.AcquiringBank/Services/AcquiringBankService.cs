@@ -44,7 +44,7 @@ public class AcquiringBankService : IBankService
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
-        var paymentProcessingResult = JsonSerializer.Deserialize<PaymentProcessingResult>(responseBody);
+        var paymentProcessingResult = Newtonsoft.Json.JsonConvert.DeserializeObject<PaymentProcessingResult>(responseBody);
 
         return paymentProcessingResult.MapToDomain();
     }

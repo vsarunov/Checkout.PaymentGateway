@@ -6,7 +6,7 @@ namespace Checkout.AcquiringBank.Emulator.Models;
 internal class PaymentRoot
 {
     [JsonConstructor]
-    private PaymentRoot(Guid id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
+    public PaymentRoot(Guid id, Payer payer, Merchant merchant, Payment value, TransactionTimeStamp timeStamp, Guid correlationId)
     {
         Value = value;
         Id = id;
